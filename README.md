@@ -1,5 +1,4 @@
-Code Nation Studio Multiplayer Game
-===================================
+# Code Nation Studio Multiplayer Game
 
 **React/Firebase project designed for [Code Nation][code-nation] students**
 
@@ -12,8 +11,7 @@ At the end of the project, teachers will merge all groups' projects into a
 single React application to be hosted forever, making any game playable at any
 time (and available for any future job application).
 
-Day-by-day example: Tic Tac Toe
--------------------------------
+## Day-by-day example: Tic Tac Toe
 
 ### Step 1: Creating a new game component and reading session metadata
 
@@ -53,14 +51,13 @@ above, we must create `src/game/tictactoe/TicTacToe.js`. Your filename and
 component name will obviously be different.
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
 
 export default class TicTacToe extends GameComponent {
-
   render() {
     var id = this.getSessionId();
-    var users = this.getSessionUserIds().map((user_id) => (
+    var users = this.getSessionUserIds().map(user_id => (
       <li key={user_id}>{user_id}</li>
     ));
     var creator = this.getSessionCreatorUserId();
@@ -69,9 +66,7 @@ export default class TicTacToe extends GameComponent {
         <p>Session ID: {id}</p>
         <p>Session creator: {creator}</p>
         <p>Session users:</p>
-        <ul>
-          {users}
-        </ul>
+        <ul>{users}</ul>
       </div>
     );
   }
@@ -80,21 +75,21 @@ export default class TicTacToe extends GameComponent {
 
 Run your code and see what happens! Ask a teammate (who is running the same
 code) to join your newly created game and see what happens to the list of
-users. It should grow! *This is real time collaboration!*
+users. It should grow! _This is real time collaboration!_
 
 But what is `GameComponent` and how do we use these `this.getSessionId()`
 functions? `GameComponent` is our "parent" component and gives us access to the
 following functions:
 
-  1. `this.getSessionId()`: Returns the current session ID as stored in
-     Firebase
-  1. `this.getSessionUserIds()`: Returns the list of user IDs connected to the
-     current session
-  1. `this.getSessionCreatorUserId()`: Returns the user ID of the one who
-     created this current session
-  1. `this.getSessionTitle()`: Returns the session title, e.g., "Rock, Paper,
-     Scissors"
-  1. `this.getMyUserId()`: Returns the user ID of the current user, i.e. YOU
+1. `this.getSessionId()`: Returns the current session ID as stored in
+   Firebase
+1. `this.getSessionUserIds()`: Returns the list of user IDs connected to the
+   current session
+1. `this.getSessionCreatorUserId()`: Returns the user ID of the one who
+   created this current session
+1. `this.getSessionTitle()`: Returns the session title, e.g., "Rock, Paper,
+   Scissors"
+1. `this.getMyUserId()`: Returns the user ID of the current user, i.e. YOU
 
 All of the above functions are accessing the [Firebase Database][firebase-db]
 path `/session-metadata/<session-id>`. This is the database shared with all
@@ -104,19 +99,17 @@ users playing the current game session. You can explore this data using the
 #### Step 1.3: Accessing user data via `UserApi`
 
 This webpage shows data like `Session creator: HxTp9DEPvUYbN4eLmge1a7Apjzz2`.
-Can we do better? Can I show meaningful data like, `Session creator: Joe
-Tessler`? *Yes!* Use `UserApi` as shown below:
+Can we do better? Can I show meaningful data like, `Session creator: Joe Tessler`? _Yes!_ Use `UserApi` as shown below:
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
-
   render() {
     var id = this.getSessionId();
-    var users = this.getSessionUserIds().map((user_id) => (
+    var users = this.getSessionUserIds().map(user_id => (
       <li key={user_id}>{UserApi.getName(user_id)}</li>
     ));
     var creator = UserApi.getName(this.getSessionCreatorUserId());
@@ -125,9 +118,7 @@ export default class TicTacToe extends GameComponent {
         <p>Session ID: {id}</p>
         <p>Session creator: {creator}</p>
         <p>Session users:</p>
-        <ul>
-          {users}
-        </ul>
+        <ul>{users}</ul>
       </div>
     );
   }
@@ -163,7 +154,7 @@ Updating game data is as easy! Just write to the Firebase database using the
 reference returned by `this.getSessionDatabaseRef()`, e.g.:
 
 ```javascript
-this.getSessionDatabaseRef().set({text: "Hello, World!"});
+this.getSessionDatabaseRef().set({ text: "Hello, World!" });
 ```
 
 This reference give you access to all of the Firebase database functions we
@@ -186,14 +177,14 @@ are listening for changes to the Firebase database, NOT React state.**
 We can define these functions in our component like the following example:
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
   constructor(props) {
     super(props);
-    this.getSessionDatabaseRef().set({text: "Hello, World!"});
+    this.getSessionDatabaseRef().set({ text: "Hello, World!" });
   }
 
   onSessionDataChanged(data) {
@@ -202,7 +193,7 @@ export default class TicTacToe extends GameComponent {
 
   render() {
     var id = this.getSessionId();
-    var users = this.getSessionUserIds().map((user_id) => (
+    var users = this.getSessionUserIds().map(user_id => (
       <li key={user_id}>{UserApi.getName(user_id)}</li>
     ));
     var creator = UserApi.getName(this.getSessionCreatorUserId());
@@ -211,17 +202,15 @@ export default class TicTacToe extends GameComponent {
         <p>Session ID: {id}</p>
         <p>Session creator: {creator}</p>
         <p>Session users:</p>
-        <ul>
-          {users}
-        </ul>
+        <ul>{users}</ul>
       </div>
     );
   }
 }
 ```
 
-Open your browser console and confirm "Data changed!" is logged. *Yay! Now we
-are writing to our Firebase database!*
+Open your browser console and confirm "Data changed!" is logged. _Yay! Now we
+are writing to our Firebase database!_
 
 #### Step 2.3: Building a more interesting demo (button mashing)
 
@@ -234,14 +223,14 @@ button. Let's default to `null` (nothing). **Warning: this is writing to React
 state, NOT the remote Firebase database.**
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
   constructor(props) {
     super(props);
-    this.state = { last_user_id: null, };
+    this.state = { last_user_id: null };
   }
 }
 ```
@@ -254,14 +243,14 @@ Firebase database, not React state.** We _then_ update the React state
 occurs.
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
   constructor(props) {
     super(props);
-    this.state = { last_user_id: null, };
+    this.state = { last_user_id: null };
   }
 
   onSessionDataChanged(data) {
@@ -276,14 +265,14 @@ Then we need to add the rendered `<button>` and its click handler,
 database, not React state.**
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
   constructor(props) {
     super(props);
-    this.state = { last_user_id: null, };
+    this.state = { last_user_id: null };
   }
 
   onSessionDataChanged(data) {
@@ -295,9 +284,7 @@ export default class TicTacToe extends GameComponent {
   }
 
   render() {
-    return (
-      <button onClick={() => this.handleButtonClick()}>Click me!</button>
-    );
+    return <button onClick={() => this.handleButtonClick()}>Click me!</button>;
   }
 }
 ```
@@ -306,14 +293,14 @@ What's missing? Conditional rendering! We must render the "Joe Tessler clicked
 the button" message. Simply add this to the `render()` function:
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
   constructor(props) {
     super(props);
-    this.state = { last_user_id: null, };
+    this.state = { last_user_id: null };
   }
 
   onSessionDataChanged(data) {
@@ -370,23 +357,23 @@ their turn).
 First, define our default state and update it whenever the database changes.
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
   constructor(props) {
     super(props);
     this.state = {
-      cellState: [".", ".",  ".",  ".",  ".",  ".",  ".",  ".",  "."],
-      currentUser: this.getSessionCreatorUserId(),
+      cellState: [".", ".", ".", ".", ".", ".", ".", ".", "."],
+      currentUser: this.getSessionCreatorUserId()
     };
   }
 
   onSessionDataChanged(data) {
     this.setState({
       cellState: data.cell_state,
-      currentUser: data.current_user,
+      currentUser: data.current_user
     });
   }
 }
@@ -398,23 +385,23 @@ the first turn to the session creator using `this.getSessionCreatorUserId()`.
 Next, let's render our Tic Tac Toe grid as a 3x3 set of `<button>` elements:
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
   constructor(props) {
     super(props);
     this.state = {
-      cellState: [".", ".",  ".",  ".",  ".",  ".",  ".",  ".",  "."],
-      currentUser: this.getSessionCreatorUserId(),
+      cellState: [".", ".", ".", ".", ".", ".", ".", ".", "."],
+      currentUser: this.getSessionCreatorUserId()
     };
   }
 
   onSessionDataChanged(data) {
     this.setState({
       cellState: data.cell_state,
-      currentUser: data.current_user,
+      currentUser: data.current_user
     });
   }
 
@@ -452,27 +439,26 @@ actions whenever a user clicks on the board:
 #### Step 4.1: Create a button click handler
 
 Add a button click handler to update the Firebase database. If you are the
-session creator (checked using `this.getMyUserId() ===
-this.getSessionCreatorUserId()`), mark an `X`, otherwise an `O`:
+session creator (checked using `this.getMyUserId() === this.getSessionCreatorUserId()`), mark an `X`, otherwise an `O`:
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
   constructor(props) {
     super(props);
     this.state = {
-      cellState: [".", ".",  ".",  ".",  ".",  ".",  ".",  ".",  "."],
-      currentUser: this.getSessionCreatorUserId(),
+      cellState: [".", ".", ".", ".", ".", ".", ".", ".", "."],
+      currentUser: this.getSessionCreatorUserId()
     };
   }
 
   onSessionDataChanged(data) {
     this.setState({
       cellState: data.cell_state,
-      currentUser: data.current_user,
+      currentUser: data.current_user
     });
   }
 
@@ -485,7 +471,7 @@ export default class TicTacToe extends GameComponent {
     }
     this.getSessionDatabaseRef().set({
       cell_state: cellState,
-      current_user: this.getMyUserId(),
+      current_user: this.getMyUserId()
     });
   }
 
@@ -543,23 +529,23 @@ Now we only need to make two more modifications:
    already an `X` or `O`
 
 ```javascript
-import GameComponent from '../../GameComponent.js';
-import React from 'react';
-import UserApi from '../../UserApi.js';
+import GameComponent from "../../GameComponent.js";
+import React from "react";
+import UserApi from "../../UserApi.js";
 
 export default class TicTacToe extends GameComponent {
   constructor(props) {
     super(props);
     this.state = {
-      cellState: [".", ".",  ".",  ".",  ".",  ".",  ".",  ".",  "."],
-      currentUser: this.getSessionCreatorUserId(),
+      cellState: [".", ".", ".", ".", ".", ".", ".", ".", "."],
+      currentUser: this.getSessionCreatorUserId()
     };
   }
 
   onSessionDataChanged(data) {
     this.setState({
       cellState: data.cell_state,
-      currentUser: data.current_user,
+      currentUser: data.current_user
     });
   }
 
@@ -572,7 +558,7 @@ export default class TicTacToe extends GameComponent {
     }
     this.getSessionDatabaseRef().set({
       cell_state: cellState,
-      current_user: this.getOtherUserId(),
+      current_user: this.getOtherUserId()
     });
   }
 
@@ -594,8 +580,9 @@ export default class TicTacToe extends GameComponent {
   render() {
     var buttons = this.state.cellState.map((state, i) => (
       <button
-          disabled={!this.isMyTurn() || state !== "."}
-          onClick={() => this.handleButtonClick(i)}>
+        disabled={!this.isMyTurn() || state !== "."}
+        onClick={() => this.handleButtonClick(i)}
+      >
         {state}
       </button>
     ));
@@ -643,8 +630,7 @@ library][material-ui], which provides React components pre-styled with Google's
 Material theme. **Check out the component demos and try using one in your
 game!**
 
-Troubleshooting
----------------
+## Troubleshooting
 
 ### I can't log in!
 
@@ -658,15 +644,14 @@ changes. Try disabling this feature so React only reloads when you save the
 file. In codesandbox.io, go to `File -> Preferences -> CodeSandbox Settings`,
 then disable `Preview on edit` in the `Preview` preferences.
 
-Resources
----------
+## Resources
 
-  - Material UI: [React components documentation][material-ui]
-  - React: [ReactJS documentation][reactjs]
-  - Firebase: [Firebase JS documentation][firebase-js]
+- Material UI: [React components documentation][material-ui]
+- React: [ReactJS documentation][reactjs]
+- Firebase: [Firebase JS documentation][firebase-js]
 
-[code-nation]:https://codenation.org
-[firebase-db]:https://firebase.google.com/docs/database/web/read-and-write
-[firebase-js]:https://firebase.google.com/docs/reference/js/
-[material-ui]:https://www.material-ui.com/#/components/app-bar
-[reactjs]:https://reactjs.org/docs/hello-world.html
+[code-nation]: https://codenation.org
+[firebase-db]: https://firebase.google.com/docs/database/web/read-and-write
+[firebase-js]: https://firebase.google.com/docs/reference/js/
+[material-ui]: https://www.material-ui.com/#/components/app-bar
+[reactjs]: https://reactjs.org/docs/hello-world.html
