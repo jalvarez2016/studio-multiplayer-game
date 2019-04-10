@@ -106,7 +106,7 @@ const gameData = {
     title: "Burst Forth",
     authors: "Jason Alvarez, William Collazo, Usman",
     description: "oof",
-    minUsers: 2,
+    minUsers: 1,
     maxUsers: 2,
     component: burst_Forth
   }
