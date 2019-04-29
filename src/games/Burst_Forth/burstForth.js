@@ -6,13 +6,34 @@ import firebase from "firebase";
 
 const W = 900;
 const H = 700;
-const R = 20;
 const fps = 100;
 const paddleWidth = 100,
   paddleHeight = 10,
   paddleY = H - 100;
 var windowWidth = document.body.clientWidth;
 var derp = (windowWidth - W) / 2;
+
+var durability = {
+  1: "red",
+  2: "yellow",
+  3: "blue"
+};
+
+class block {
+  constructor(top, left, width, height, durability, color) {
+    this.width = width;
+    this.height = height;
+    this.top = top;
+    this.left = left;
+    this.durability = durability;
+    this.color = color;
+  }
+}
+
+var block1 = new block(10, 10, H / 10, 20, 3, durability[3]);
+var block2 = new block(120, 10, H / 10, 20, 2, durability[2]);
+var block3 = new block(120, 10, H / 10, 20, 2, durability[1]);
+var blocks = [block1, block2];
 
 export default class burst_Forth extends GameComponent {
   constructor(props) {
@@ -26,8 +47,8 @@ export default class burst_Forth extends GameComponent {
     this.interval = setInterval(() => this.ballMove(), 1000 / fps);
     this.state = {
       ball: {
-        left: 1,
-        top: 1,
+        left: W / 2,
+        top: paddleY - 50,
         ballR: 10,
         ballSpeedX: 5,
         ballSpeedY: 5
@@ -39,6 +60,7 @@ export default class burst_Forth extends GameComponent {
   ballMove() {
     var { left, top, ballR, ballSpeedX, ballSpeedY } = this.state.ball;
 
+    //wall collisions
     if (left + ballR > W || ballR + left < 0) {
       ballSpeedX = -ballSpeedX;
     }
@@ -46,12 +68,30 @@ export default class burst_Forth extends GameComponent {
       ballSpeedY = -ballSpeedY;
     }
 
+    //paddle collisions
     if (
       this.state.youLeft - derp - paddleWidth / 2 < left &&
       this.state.youLeft - derp + paddleWidth / 2 > left + ballR
     ) {
       if (top >= paddleY && top + ballR / 2 <= paddleY + paddleHeight) {
         ballSpeedY = -ballSpeedY;
+        var delta = left - (this.state.youLeft - derp + paddleHeight / 2);
+        ballSpeedX = delta * 0.25;
+      }
+    }
+
+    //block collsions
+    //add a map or for loop
+
+    for (var i = 0; i < blocks.length; i++) {
+      if (left + ballR <= block1.left + block1.width && left >= block1.left) {
+        if (top + ballR <= block1.top + block1.height && top >= block1.top) {
+          ballSpeedY = -ballSpeedY;
+          var currentBlock = blocks[i];
+          currentBlock.durability -= 1;
+          console.log(currentBlock.durability);
+          this.checkBlock(currentBlock);
+        }
       }
     }
 
@@ -64,6 +104,12 @@ export default class burst_Forth extends GameComponent {
         ballSpeedY: ballSpeedY
       }
     });
+  }
+  checkBlock(currentBlock) {
+    if (currentBlock.durability <= 0) {
+      currentBlock.height = 0;
+      currentBlock.width = 0;
+    }
   }
 
   onMouseMove(e) {
@@ -81,43 +127,79 @@ export default class burst_Forth extends GameComponent {
   render() {
     windowWidth = document.body.clientWidth;
     derp = (windowWidth - W) / 2;
+    // var id = this.getSessionId();
+    // var users = this.getSessionUserIds().map(user_id => (
+    //   <li key={user_id}>{user_id}</li>
+    // ));
+    // var creator = this.getSessionCreatorUserId();
 
     return (
-      <div
-        style={{
-          margin: "30px auto",
-          position: "relative",
-          backgroundColor: "black",
-          width: W + "px",
-          height: H + "px"
-          // cursor: "none"
-        }}
-        onMouseMove={e => this.onMouseMove(e)}
-      >
-        <div
-          className="You"
+      <div>
+        {/* <div
           style={{
             position: "absolute",
-            backgroundColor: "white",
-            width: paddleWidth + "px",
-            height: paddleHeight + "px",
-            top: paddleY + "px",
-            left: this.state.youLeft - derp - paddleWidth / 2 + "px"
+            width: "50%"
           }}
-        />
+        >
+          <p>Session ID: {id}</p>
+          <p>Session creator: {creator}</p>
+          <p>Session users:</p>
+          <ul>{users}</ul>
+        </div> */}
         <div
           style={{
-            position: "absolute",
-            backgroundColor: "white",
-            width: this.state.ball.ballR + "px",
-            height: this.state.ball.ballR + "px",
-            borderRadius: "50%",
-            top: this.state.ball.top + "px",
-            left: this.state.ball.left + "px"
+            margin: "30px auto",
+            position: "relative",
+            backgroundColor: "black",
+            width: W + "px",
+            height: H + "px"
+            // cursor: "none"
           }}
-        />
-
-        {/* <div className="Enemy"
+          onMouseMove={e => this.onMouseMove(e)}
+        >
+          <div
+            className="You"
+            style={{
+              position: "absolute",
+              backgroundColor: "white",
+              width: paddleWidth + "px",
+              height: paddleHeight + "px",
+              top: paddleY + "px",
+              left: this.state.youLeft - derp - paddleWidth / 2 + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: "white",
+              width: this.state.ball.ballR + "px",
+              height: this.state.ball.ballR + "px",
+              borderRadius: "50%",
+              top: this.state.ball.top + "px",
+              left: this.state.ball.left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: block1.color,
+              width: block1.width + "px",
+              height: block1.height + "px",
+              top: block1.top + "px",
+              left: block1.left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: block2.color,
+              width: block2.width + "px",
+              height: block2.height + "px",
+              top: block2.top + "px",
+              left: block2.left + "px"
+            }}
+          />
+          {/* <div className="Enemy"
           style={{
             position: "relative",
             backgroundColor: "white",
@@ -125,6 +207,7 @@ export default class burst_Forth extends GameComponent {
             height: paddleHeight + "px"
           }}
         /> */}
+        </div>
       </div>
     );
   }
