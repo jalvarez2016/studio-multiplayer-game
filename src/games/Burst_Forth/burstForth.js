@@ -44,23 +44,33 @@ export default class burst_Forth extends GameComponent {
       .database()
       .ref(`/session/${props.location.state.id}`);
     this.isCreator = this.user === props.location.state.creator;
-
+    var users = this.getSessionUserIds().map(user_id => (
+      <li key={user_id}>{UserApi.getName(user_id)}</li>
+    ));
     this.interval = setInterval(() => this.ballMove(), 1000 / fps);
     this.state = {
       ball: {
         left: W / 2,
         top: paddleY - 50,
         ballR: 10,
-        ballSpeedX: 5,
-        ballSpeedY: 5
+        ballSpeedX: 4,
+        ballSpeedY: 3
       },
-      youLeft: 0,
+      you: {
+        left: 0
+      },
+      p2: {
+        left: 0
+      },
       youScore: 0
     };
   }
 
   ballMove() {
     var { left, top, ballR, ballSpeedX, ballSpeedY } = this.state.ball;
+    this.getSessionDatabaseRef().set({
+      P1: {}
+    });
 
     //wall collisions
     if (left + ballR > W || ballR + left < 0) {
@@ -72,13 +82,13 @@ export default class burst_Forth extends GameComponent {
 
     //paddle collisions
     if (
-      this.state.youLeft - derp - paddleWidth / 2 < left &&
-      this.state.youLeft - derp + paddleWidth / 2 > left + ballR
+      this.state.you.left - derp - paddleWidth / 2 < left &&
+      this.state.you.left - derp + paddleWidth / 2 > left + ballR
     ) {
       if (top >= paddleY && top + ballR / 2 <= paddleY + paddleHeight) {
         ballSpeedY = -ballSpeedY;
-        var delta = left - (this.state.youLeft - derp + paddleHeight / 2);
-        ballSpeedX = delta * 0.25;
+        // var delta = left - (this.state.you.left - derp + paddleHeight / 2);
+        // ballSpeedX = delta * 0.25;
       }
     }
 
@@ -122,14 +132,19 @@ export default class burst_Forth extends GameComponent {
   }
 
   onMouseMove(e) {
+    //if this is session creator
     this.getSessionDatabaseRef().set({
-      x_cord: e.clientX
+      P1: {
+        x_cord: e.clientX
+      }
     });
   }
 
   onSessionDataChanged(data) {
     this.setState({
-      youLeft: data.x_cord
+      you: {
+        left: data.P1.x_cord
+      }
     });
   }
 
@@ -170,11 +185,22 @@ export default class burst_Forth extends GameComponent {
             className="You"
             style={{
               position: "absolute",
-              backgroundColor: "white",
+              backgroundColor: "green",
               width: paddleWidth + "px",
               height: paddleHeight + "px",
               top: paddleY + "px",
-              left: this.state.youLeft - derp - paddleWidth / 2 + "px"
+              left: this.state.you.left - derp - paddleWidth / 2 + "px"
+            }}
+          />
+          <div
+            className="Player2"
+            style={{
+              position: "absolute",
+              backgroundColor: "purple",
+              width: paddleWidth + "px",
+              height: paddleHeight + "px",
+              top: paddleY + "px",
+              left: this.state.p2.left - derp - paddleWidth / 2 + "px"
             }}
           />
           <div
@@ -217,7 +243,6 @@ export default class burst_Forth extends GameComponent {
               top: block3.top + "px",
               left: block3.left + "px"
             }}
-          />
           />
           {/* <div className="Enemy"
           style={{
