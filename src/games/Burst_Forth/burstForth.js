@@ -14,26 +14,27 @@ var windowWidth = document.body.clientWidth;
 var derp = (windowWidth - W) / 2;
 
 var durability = {
+  0: "black",
   1: "red",
   2: "yellow",
   3: "blue"
 };
 
 class block {
-  constructor(top, left, width, height, durability, color) {
+  constructor(top, left, width, height, durabilityNum) {
     this.width = width;
     this.height = height;
     this.top = top;
     this.left = left;
-    this.durability = durability;
-    this.color = color;
+    this.durabilityNum = durabilityNum;
+    this.color = durability[durabilityNum];
   }
 }
 
-var block1 = new block(10, 10, H / 10, 20, 3, durability[3]);
-var block2 = new block(120, 10, H / 10, 20, 2, durability[2]);
-var block3 = new block(120, 10, H / 10, 20, 2, durability[1]);
-var blocks = [block1, block2];
+var block1 = new block(10, 10, H / 10, 20, 3);
+var block2 = new block(120, 10, H / 10, 20, 2);
+var block3 = new block(230, 10, H / 10, 20, 1);
+var blocks = [block1, block2, block3];
 
 export default class burst_Forth extends GameComponent {
   constructor(props) {
@@ -53,7 +54,8 @@ export default class burst_Forth extends GameComponent {
         ballSpeedX: 5,
         ballSpeedY: 5
       },
-      youLeft: 0
+      youLeft: 0,
+      youScore: 0
     };
   }
 
@@ -81,15 +83,20 @@ export default class burst_Forth extends GameComponent {
     }
 
     //block collsions
-    //add a map or for loop
 
     for (var i = 0; i < blocks.length; i++) {
-      if (left + ballR <= block1.left + block1.width && left >= block1.left) {
-        if (top + ballR <= block1.top + block1.height && top >= block1.top) {
+      if (
+        left + ballR <= blocks[i].left + blocks[i].width &&
+        left >= blocks[i].left
+      ) {
+        if (
+          top + ballR <= blocks[i].top + blocks[i].height &&
+          top >= blocks[i].top
+        ) {
           ballSpeedY = -ballSpeedY;
           var currentBlock = blocks[i];
-          currentBlock.durability -= 1;
-          console.log(currentBlock.durability);
+          currentBlock.durabilityNum -= 1;
+          console.log(currentBlock.durabilityNum);
           this.checkBlock(currentBlock);
         }
       }
@@ -106,7 +113,9 @@ export default class burst_Forth extends GameComponent {
     });
   }
   checkBlock(currentBlock) {
-    if (currentBlock.durability <= 0) {
+    currentBlock.color = durability[currentBlock.durabilityNum];
+
+    if (currentBlock.durabilityNum <= 0) {
       currentBlock.height = 0;
       currentBlock.width = 0;
     }
@@ -199,6 +208,17 @@ export default class burst_Forth extends GameComponent {
               left: block2.left + "px"
             }}
           />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: block3.color,
+              width: block3.width + "px",
+              height: block3.height + "px",
+              top: block3.top + "px",
+              left: block3.left + "px"
+            }}
+          />
+          />
           {/* <div className="Enemy"
           style={{
             position: "relative",
@@ -207,6 +227,14 @@ export default class burst_Forth extends GameComponent {
             height: paddleHeight + "px"
           }}
         /> */}
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            color: "black"
+          }}
+        >
+          <p>You have {this.state.youScore} points</p>
         </div>
       </div>
     );
