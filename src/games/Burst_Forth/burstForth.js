@@ -44,9 +44,10 @@ export default class burst_Forth extends GameComponent {
       .database()
       .ref(`/session/${props.location.state.id}`);
     this.isCreator = this.user === props.location.state.creator;
-    var users = this.getSessionUserIds().map(user_id => (
+    this.users = this.getSessionUserIds().map(user_id => (
       <li key={user_id}>{UserApi.getName(user_id)}</li>
     ));
+    this.creator = UserApi.getName(this.getSessionCreatorUserId());
     this.interval = setInterval(() => this.ballMove(), 1000 / fps);
     this.state = {
       ball: {
@@ -56,11 +57,19 @@ export default class burst_Forth extends GameComponent {
         ballSpeedX: 4,
         ballSpeedY: 3
       },
+      ball2: {
+        //use this later for the collsion of the other player
+        left: W / 2,
+        top: paddleY - 50,
+        ballR: 10,
+        ballSpeedX: 4,
+        ballSpeedY: 3
+      },
       you: {
-        left: 0
+        left: W / 2
       },
       p2: {
-        left: 0
+        left: W / 2
       },
       youScore: 0
     };
@@ -68,15 +77,12 @@ export default class burst_Forth extends GameComponent {
 
   ballMove() {
     var { left, top, ballR, ballSpeedX, ballSpeedY } = this.state.ball;
-    this.getSessionDatabaseRef().set({
-      P1: {}
-    });
 
     //wall collisions
     if (left + ballR > W || ballR + left < 0) {
       ballSpeedX = -ballSpeedX;
     }
-    if (top + ballR > H || ballR + top < 0) {
+    if (top + ballR > H || top < 0) {
       ballSpeedY = -ballSpeedY;
     }
 
@@ -133,11 +139,23 @@ export default class burst_Forth extends GameComponent {
 
   onMouseMove(e) {
     //if this is session creator
-    this.getSessionDatabaseRef().set({
-      P1: {
-        x_cord: e.clientX
-      }
-    });
+    if (this.isCreator) {
+      this.getSessionDatabaseRef().set({
+        P1: {
+          name: this.creator,
+          x_cord: e.clientX,
+          score: 0 //change to the state score later
+        }
+      });
+    } else {
+      this.getSessionDatabaseRef().set({
+        P2: {
+          name: this.creator,
+          x_cord: e.clientX,
+          score: 0 //change to the state score later
+        }
+      });
+    }
   }
 
   onSessionDataChanged(data) {
