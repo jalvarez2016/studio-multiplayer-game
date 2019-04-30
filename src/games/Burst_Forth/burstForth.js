@@ -139,19 +139,33 @@ export default class burst_Forth extends GameComponent {
 
   onMouseMove(e) {
     //if this is session creator
+    var creatorX = 0;
+    var p2X = 0;
     if (this.isCreator) {
+      creatorX = e.clientX;
       this.getSessionDatabaseRef().set({
         P1: {
           name: this.creator,
-          x_cord: e.clientX,
+          x_cord: creatorX,
+          score: 0 //change to the state score later
+        },
+        P2: {
+          name: this.users[0], //change name
+          x_cord: p2X,
           score: 0 //change to the state score later
         }
       });
     } else {
+      p2X = e.clientX;
       this.getSessionDatabaseRef().set({
-        P2: {
+        P1: {
           name: this.creator,
-          x_cord: e.clientX,
+          x_cord: creatorX,
+          score: 0 //change to the state score later
+        },
+        P2: {
+          name: this.users[0], //change name
+          x_cord: p2X,
           score: 0 //change to the state score later
         }
       });
@@ -162,6 +176,9 @@ export default class burst_Forth extends GameComponent {
     this.setState({
       you: {
         left: data.P1.x_cord
+      },
+      p2: {
+        left: data.P2.x_cord
       }
     });
   }
