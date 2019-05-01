@@ -10,6 +10,7 @@ const fps = 100;
 const paddleWidth = 100,
   paddleHeight = 10,
   paddleY = H - 100;
+
 var windowWidth = document.body.clientWidth;
 var derp = (windowWidth - W) / 2;
 
@@ -44,9 +45,9 @@ export default class burst_Forth extends GameComponent {
       .database()
       .ref(`/session/${props.location.state.id}`);
     this.isCreator = this.user === props.location.state.creator;
-    this.users = this.getSessionUserIds().map(user_id => (
-      <li key={user_id}>{UserApi.getName(user_id)}</li>
-    ));
+    this.users = this.getSessionUserIds().map(user_id =>
+      UserApi.getName(user_id)
+    );
     this.creator = UserApi.getName(this.getSessionCreatorUserId());
     this.interval = setInterval(() => this.ballMove(), 1000 / fps);
     this.state = {
@@ -143,28 +144,30 @@ export default class burst_Forth extends GameComponent {
     var p2X = 0;
     if (this.isCreator) {
       creatorX = e.clientX;
+      console.log(creatorX);
       this.getSessionDatabaseRef().set({
         P1: {
-          name: this.creator,
+          name: this.users[0],
           x_cord: creatorX,
           score: 0 //change to the state score later
         },
         P2: {
-          name: this.users[0], //change name
+          name: this.users[1], //change name
           x_cord: p2X,
           score: 0 //change to the state score later
         }
       });
     } else {
       p2X = e.clientX;
+      console.log(p2X);
       this.getSessionDatabaseRef().set({
         P1: {
-          name: this.creator,
+          name: this.users[0],
           x_cord: creatorX,
           score: 0 //change to the state score later
         },
         P2: {
-          name: this.users[0], //change name
+          name: this.users[1], //change name
           x_cord: p2X,
           score: 0 //change to the state score later
         }
