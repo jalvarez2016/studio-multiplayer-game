@@ -148,12 +148,12 @@ export default class burst_Forth extends GameComponent {
       this.getSessionDatabaseRef().set({
         P1: {
           name: this.users[0],
-          x_cord: creatorX,
+          x_cord: e.clientX,
           score: 0 //change to the state score later
         },
         P2: {
           name: this.users[1], //change name
-          x_cord: p2X,
+          x_cord: this.state.p2.left,
           score: 0 //change to the state score later
         }
       });
@@ -163,12 +163,12 @@ export default class burst_Forth extends GameComponent {
       this.getSessionDatabaseRef().set({
         P1: {
           name: this.users[0],
-          x_cord: creatorX,
+          x_cord: this.state.you.left,
           score: 0 //change to the state score later
         },
         P2: {
           name: this.users[1], //change name
-          x_cord: p2X,
+          x_cord: e.clientX,
           score: 0 //change to the state score later
         }
       });
