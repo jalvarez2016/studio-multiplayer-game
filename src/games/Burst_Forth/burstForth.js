@@ -4,7 +4,7 @@ import UserApi from "../../UserApi.js";
 import firebase from "firebase";
 //
 
-const W = 900;
+const W = document.body.clientWidth - 200;
 const H = 700;
 const fps = 100;
 const paddleWidth = 100,
@@ -13,6 +13,9 @@ const paddleWidth = 100,
 
 var windowWidth = document.body.clientWidth;
 var derp = (windowWidth - W) / 2;
+
+var line = W / 2 - 5;
+var lineW = 10;
 
 var durability = {
   0: "black",
@@ -37,6 +40,11 @@ var block2 = new block(120, 10, H / 10, 20, 2);
 var block3 = new block(230, 10, H / 10, 20, 1);
 var blocks = [block1, block2, block3];
 
+var eBlock1 = new block(10, line + lineW + 10, H / 10, 20, 3);
+var eBlock2 = new block(120, line + lineW + 10, H / 10, 20, 3);
+var eBlock3 = new block(230, line + lineW + 10, H / 10, 20, 1);
+var blocks2 = [eBlock1, eBlock2, eBlock3];
+
 export default class burst_Forth extends GameComponent {
   constructor(props) {
     super(props);
@@ -52,7 +60,7 @@ export default class burst_Forth extends GameComponent {
     this.interval = setInterval(() => this.ballMove(), 1000 / fps);
     this.state = {
       ball: {
-        left: W / 2,
+        left: W / 4,
         top: paddleY - 50,
         ballR: 10,
         ballSpeedX: 4,
@@ -60,11 +68,11 @@ export default class burst_Forth extends GameComponent {
       },
       ball2: {
         //use this later for the collsion of the other player
-        left: W / 2,
-        top: paddleY - 50,
-        ballR: 10,
-        ballSpeedX: 4,
-        ballSpeedY: 3
+        left2: (3 * W) / 4,
+        top2: paddleY - 50,
+        ballR2: 10,
+        ballSpeedX2: 4,
+        ballSpeedY2: 3
       },
       you: {
         left: W / 2
@@ -85,6 +93,11 @@ export default class burst_Forth extends GameComponent {
     }
     if (top + ballR > H || top < 0) {
       ballSpeedY = -ballSpeedY;
+    }
+
+    //middle collision
+    if (left + ballR > line) {
+      ballSpeedX = -ballSpeedX;
     }
 
     //paddle collisions
@@ -119,6 +132,56 @@ export default class burst_Forth extends GameComponent {
       }
     }
 
+    //ball 2 collisions
+    console.log(this.state.ball2);
+    var { left2, top2, ballR2, ballSpeedX2, ballSpeedY2 } = this.state.ball2;
+    console.log(left2);
+
+    //wall collisions
+    if (left2 + ballR2 > W || ballR2 + left2 < line + lineW) {
+      ballSpeedX2 = -ballSpeedX2;
+    }
+    if (top2 + ballR2 > H || top2 < 0) {
+      ballSpeedY2 = -ballSpeedY2;
+    }
+
+    //middle collision
+    if (left2 - ballR2 < line + lineW) {
+      ballSpeedX2 = -ballSpeedX2;
+    }
+
+    //paddle collisions
+    if (
+      this.state.p2.left - derp - paddleWidth / 2 < left2 &&
+      this.state.p2.left - derp + paddleWidth / 2 > left2 + ballR2
+    ) {
+      if (top2 >= paddleY && top2 + ballR2 / 2 <= paddleY + paddleHeight) {
+        ballSpeedY2 = -ballSpeedY2;
+        // var delta = left - (this.state.you.left - derp + paddleHeight / 2);
+        // ballSpeedX = delta * 0.25;
+      }
+    }
+
+    //block collsions
+
+    for (var x = 0; x < blocks2.length; x++) {
+      if (
+        left + ballR <= blocks2[x].left + blocks2[x].width &&
+        left >= blocks2[x].left
+      ) {
+        if (
+          top + ballR <= blocks2[x].top + blocks2[x].height &&
+          top >= blocks2[x].top
+        ) {
+          ballSpeedY2 = -ballSpeedY2;
+          var currentBlock2 = blocks2[x];
+          currentBlock2.durabilityNum -= 1;
+          console.log(currentBlock.durabilityNum);
+          this.checkBlock(currentBlock2);
+        }
+      }
+    }
+
     this.setState({
       ball: {
         left: left + ballSpeedX,
@@ -126,9 +189,44 @@ export default class burst_Forth extends GameComponent {
         ballR: ballR,
         ballSpeedX: ballSpeedX,
         ballSpeedY: ballSpeedY
+      },
+      ball2: {
+        left2: left2 + ballSpeedX2,
+        top2: top2 + ballSpeedY2,
+        ballR2: ballR2,
+        ballSpeedX2: ballSpeedX2,
+        ballSpeedY2: ballSpeedY2
+      }
+    });
+
+    this.getSessionDatabaseRef().set({
+      P1: {
+        name: this.users[0],
+        x_cord: this.state.you.left,
+        score: 0 //change to the state score later
+      },
+      P2: {
+        name: this.users[1], //change name
+        x_cord: this.state.p2.left,
+        score: 0 //change to the state score later
+      },
+      ball: {
+        left: left + ballSpeedX,
+        top: top + ballSpeedY,
+        ballR: ballR,
+        ballSpeedX: ballSpeedX,
+        ballSpeedY: ballSpeedY
+      },
+      ball2: {
+        left2: left2 + ballSpeedX2,
+        top2: top2 + ballSpeedY2,
+        ballR2: ballR2,
+        ballSpeedX2: ballSpeedX2,
+        ballSpeedY2: ballSpeedY2
       }
     });
   }
+
   checkBlock(currentBlock) {
     currentBlock.color = durability[currentBlock.durabilityNum];
 
@@ -140,11 +238,7 @@ export default class burst_Forth extends GameComponent {
 
   onMouseMove(e) {
     //if this is session creator
-    var creatorX = 0;
-    var p2X = 0;
-    if (this.isCreator) {
-      creatorX = e.clientX;
-      console.log(creatorX);
+    if (this.isCreator && e.clientX < line + lineW + 50 && e.clientX > 150) {
       this.getSessionDatabaseRef().set({
         P1: {
           name: this.users[0],
@@ -155,11 +249,28 @@ export default class burst_Forth extends GameComponent {
           name: this.users[1], //change name
           x_cord: this.state.p2.left,
           score: 0 //change to the state score later
+        },
+        ball: {
+          left: this.state.ball.left,
+          top: this.state.ball.top,
+          ballR: this.state.ball.ballR,
+          ballSpeedX: this.state.ball.ballSpeedX,
+          ballSpeedY: this.state.ball.ballSpeedY
+        },
+        ball2: {
+          left2: this.state.ball2.left2,
+          top2: this.state.ball2.top2,
+          ballR2: this.state.ball2.ballR2,
+          ballSpeedX2: this.state.ball2.ballSpeedX2,
+          ballSpeedY2: this.state.ball2.ballSpeedY2
         }
       });
-    } else {
-      p2X = e.clientX;
-      console.log(p2X);
+    }
+    if (
+      UserApi.getName(this.user) === this.users[1] &&
+      e.clientX > line + lineW + 150 &&
+      e.clientX < windowWidth - 150
+    ) {
       this.getSessionDatabaseRef().set({
         P1: {
           name: this.users[0],
@@ -170,6 +281,20 @@ export default class burst_Forth extends GameComponent {
           name: this.users[1], //change name
           x_cord: e.clientX,
           score: 0 //change to the state score later
+        },
+        ball: {
+          left: this.state.ball.left,
+          top: this.state.ball.top,
+          ballR: this.state.ball.ballR,
+          ballSpeedX: this.state.ball.ballSpeedX,
+          ballSpeedY: this.state.ball.ballSpeedY
+        },
+        ball2: {
+          left2: this.state.ball2.left2,
+          top2: this.state.ball2.top2,
+          ballR2: this.state.ball2.ballR2,
+          ballSpeedX2: this.state.ball2.ballSpeedX2,
+          ballSpeedY2: this.state.ball2.ballSpeedY2
         }
       });
     }
@@ -177,6 +302,21 @@ export default class burst_Forth extends GameComponent {
 
   onSessionDataChanged(data) {
     this.setState({
+      ball: {
+        left: data.ball.left,
+        top: data.ball.top,
+        ballR: data.ball.ballR,
+        ballSpeedX: data.ball.ballSpeedX,
+        ballSpeedY: data.ball.ballSpeedY
+      },
+      ball2: {
+        //use this later for the collsion of the other player
+        left2: data.ball2.left2,
+        top2: data.ball2.top2,
+        ballR2: data.ball2.ballR2,
+        ballSpeedX2: data.ball2.ballSpeedX2,
+        ballSpeedY2: data.ball2.ballSpeedY2
+      },
       you: {
         left: data.P1.x_cord
       },
@@ -231,17 +371,7 @@ export default class burst_Forth extends GameComponent {
             }}
           />
           <div
-            className="Player2"
-            style={{
-              position: "absolute",
-              backgroundColor: "purple",
-              width: paddleWidth + "px",
-              height: paddleHeight + "px",
-              top: paddleY + "px",
-              left: this.state.p2.left - derp - paddleWidth / 2 + "px"
-            }}
-          />
-          <div
+            className="ball1"
             style={{
               position: "absolute",
               backgroundColor: "white",
@@ -280,6 +410,41 @@ export default class burst_Forth extends GameComponent {
               height: block3.height + "px",
               top: block3.top + "px",
               left: block3.left + "px"
+            }}
+          />
+
+          <div
+            className="line"
+            style={{
+              position: "absolute",
+              backgroundColor: "white",
+              width: lineW + "px",
+              height: "inherit",
+              left: line + "px"
+            }}
+          />
+
+          <div
+            className="Player2"
+            style={{
+              position: "absolute",
+              backgroundColor: "purple",
+              width: paddleWidth + "px",
+              height: paddleHeight + "px",
+              top: paddleY + "px",
+              left: this.state.p2.left - derp - paddleWidth / 2 + "px"
+            }}
+          />
+          <div
+            className="ball2"
+            style={{
+              position: "absolute",
+              backgroundColor: "white",
+              width: this.state.ball2.ballR2 + "px",
+              height: this.state.ball2.ballR2 + "px",
+              borderRadius: "50%",
+              top: this.state.ball2.top2 + "px",
+              left: this.state.ball2.left2 + "px"
             }}
           />
           {/* <div className="Enemy"
