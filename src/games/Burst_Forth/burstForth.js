@@ -78,7 +78,7 @@ export default class burst_Forth extends GameComponent {
         left: W / 2
       },
       p2: {
-        left: W / 2
+        left: (3 * W) / 4
       },
       youScore: 0
     };
@@ -133,9 +133,8 @@ export default class burst_Forth extends GameComponent {
     }
 
     //ball 2 collisions
-    console.log(this.state.ball2);
+
     var { left2, top2, ballR2, ballSpeedX2, ballSpeedY2 } = this.state.ball2;
-    console.log(left2);
 
     //wall collisions
     if (left2 + ballR2 > W || ballR2 + left2 < line + lineW) {
@@ -182,48 +181,48 @@ export default class burst_Forth extends GameComponent {
       }
     }
 
-    this.setState({
-      ball: {
-        left: left + ballSpeedX,
-        top: top + ballSpeedY,
-        ballR: ballR,
-        ballSpeedX: ballSpeedX,
-        ballSpeedY: ballSpeedY
-      },
-      ball2: {
-        left2: left2 + ballSpeedX2,
-        top2: top2 + ballSpeedY2,
-        ballR2: ballR2,
-        ballSpeedX2: ballSpeedX2,
-        ballSpeedY2: ballSpeedY2
-      }
-    });
+    // this.setState({
+    //   ball: {
+    //     left: left + ballSpeedX,
+    //     top: top + ballSpeedY,
+    //     ballR: ballR,
+    //     ballSpeedX: ballSpeedX,
+    //     ballSpeedY: ballSpeedY
+    //   },
+    //   ball2: {
+    //     left2: left2 + ballSpeedX2,
+    //     top2: top2 + ballSpeedY2,
+    //     ballR2: ballR2,
+    //     ballSpeedX2: ballSpeedX2,
+    //     ballSpeedY2: ballSpeedY2
+    //   }
+    // });
 
     this.getSessionDatabaseRef().set({
       P1: {
         name: this.users[0],
         x_cord: this.state.you.left,
-        score: 0 //change to the state score later
+        score: 1 //change to the state score later
       },
       P2: {
         name: this.users[1], //change name
         x_cord: this.state.p2.left,
-        score: 0 //change to the state score later
-      },
-      ball: {
-        left: left + ballSpeedX,
-        top: top + ballSpeedY,
-        ballR: ballR,
-        ballSpeedX: ballSpeedX,
-        ballSpeedY: ballSpeedY
-      },
-      ball2: {
-        left2: left2 + ballSpeedX2,
-        top2: top2 + ballSpeedY2,
-        ballR2: ballR2,
-        ballSpeedX2: ballSpeedX2,
-        ballSpeedY2: ballSpeedY2
+        score: 1 //change to the state score later
       }
+      // ball: {
+      //   left: left + ballSpeedX,
+      //   top: top + ballSpeedY,
+      //   ballR: ballR,
+      //   ballSpeedX: ballSpeedX,
+      //   ballSpeedY: ballSpeedY
+      // },
+      // ball2: {
+      //   left2: left2 + ballSpeedX2,
+      //   top2: top2 + ballSpeedY2,
+      //   ballR2: ballR2,
+      //   ballSpeedX2: ballSpeedX2,
+      //   ballSpeedY2: ballSpeedY2
+      // }
     });
   }
 
@@ -249,21 +248,21 @@ export default class burst_Forth extends GameComponent {
           name: this.users[1], //change name
           x_cord: this.state.p2.left,
           score: 0 //change to the state score later
-        },
-        ball: {
-          left: this.state.ball.left,
-          top: this.state.ball.top,
-          ballR: this.state.ball.ballR,
-          ballSpeedX: this.state.ball.ballSpeedX,
-          ballSpeedY: this.state.ball.ballSpeedY
-        },
-        ball2: {
-          left2: this.state.ball2.left2,
-          top2: this.state.ball2.top2,
-          ballR2: this.state.ball2.ballR2,
-          ballSpeedX2: this.state.ball2.ballSpeedX2,
-          ballSpeedY2: this.state.ball2.ballSpeedY2
         }
+        // ball: {
+        //   left: this.state.ball.left,
+        //   top: this.state.ball.top,
+        //   ballR: this.state.ball.ballR,
+        //   ballSpeedX: this.state.ball.ballSpeedX,
+        //   ballSpeedY: this.state.ball.ballSpeedY
+        // },
+        // ball2: {
+        //   left2: this.state.ball2.left2,
+        //   top2: this.state.ball2.top2,
+        //   ballR2: this.state.ball2.ballR2,
+        //   ballSpeedX2: this.state.ball2.ballSpeedX2,
+        //   ballSpeedY2: this.state.ball2.ballSpeedY2
+        // }
       });
     }
     if (
@@ -281,42 +280,43 @@ export default class burst_Forth extends GameComponent {
           name: this.users[1], //change name
           x_cord: e.clientX,
           score: 0 //change to the state score later
-        },
-        ball: {
-          left: this.state.ball.left,
-          top: this.state.ball.top,
-          ballR: this.state.ball.ballR,
-          ballSpeedX: this.state.ball.ballSpeedX,
-          ballSpeedY: this.state.ball.ballSpeedY
-        },
-        ball2: {
-          left2: this.state.ball2.left2,
-          top2: this.state.ball2.top2,
-          ballR2: this.state.ball2.ballR2,
-          ballSpeedX2: this.state.ball2.ballSpeedX2,
-          ballSpeedY2: this.state.ball2.ballSpeedY2
         }
+        // ball: {
+        //   left: this.state.ball.left,
+        //   top: this.state.ball.top,
+        //   ballR: this.state.ball.ballR,
+        //   ballSpeedX: this.state.ball.ballSpeedX,
+        //   ballSpeedY: this.state.ball.ballSpeedY
+        // },
+        // ball2: {
+        //   left2: this.state.ball2.left2,
+        //   top2: this.state.ball2.top2,
+        //   ballR2: this.state.ball2.ballR2,
+        //   ballSpeedX2: this.state.ball2.ballSpeedX2,
+        //   ballSpeedY2: this.state.ball2.ballSpeedY2
+        // }
       });
     }
   }
 
   onSessionDataChanged(data) {
+    console.log(data);
     this.setState({
-      ball: {
-        left: data.ball.left,
-        top: data.ball.top,
-        ballR: data.ball.ballR,
-        ballSpeedX: data.ball.ballSpeedX,
-        ballSpeedY: data.ball.ballSpeedY
-      },
-      ball2: {
-        //use this later for the collsion of the other player
-        left2: data.ball2.left2,
-        top2: data.ball2.top2,
-        ballR2: data.ball2.ballR2,
-        ballSpeedX2: data.ball2.ballSpeedX2,
-        ballSpeedY2: data.ball2.ballSpeedY2
-      },
+      // ball: {
+      //   left: data.ball.left,
+      //   top: data.ball.top,
+      //   ballR: data.ball.ballR,
+      //   ballSpeedX: data.ball.ballSpeedX,
+      //   ballSpeedY: data.ball.ballSpeedY
+      // },
+      // ball2: {
+      //   //use this later for the collsion of the other player
+      //   left2: data.ball2.left2,
+      //   top2: data.ball2.top2,
+      //   ballR2: data.ball2.ballR2,
+      //   ballSpeedX2: data.ball2.ballSpeedX2,
+      //   ballSpeedY2: data.ball2.ballSpeedY2
+      // },
       you: {
         left: data.P1.x_cord
       },
