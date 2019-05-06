@@ -180,24 +180,7 @@ export default class burst_Forth extends GameComponent {
         }
       }
     }
-
-    // this.setState({
-    //   ball: {
-    //     left: left + ballSpeedX,
-    //     top: top + ballSpeedY,
-    //     ballR: ballR,
-    //     ballSpeedX: ballSpeedX,
-    //     ballSpeedY: ballSpeedY
-    //   },
-    //   ball2: {
-    //     left2: left2 + ballSpeedX2,
-    //     top2: top2 + ballSpeedY2,
-    //     ballR2: ballR2,
-    //     ballSpeedX2: ballSpeedX2,
-    //     ballSpeedY2: ballSpeedY2
-    //   }
-    // });
-
+    
     this.getSessionDatabaseRef().set({
       P1: {
         name: this.users[0],
@@ -208,22 +191,47 @@ export default class burst_Forth extends GameComponent {
         name: this.users[1], //change name
         x_cord: this.state.p2.left,
         score: 1 //change to the state score later
+      },
+      ball: {
+        left: left + ballSpeedX,
+        top: top + ballSpeedY,
+        ballR: ballR,
+        ballSpeedX: ballSpeedX,
+        ballSpeedY: ballSpeedY
+      },
+      ball2: {
+        left2: left2 + ballSpeedX2,
+        top2: top2 + ballSpeedY2,
+        ballR2: ballR2,
+        ballSpeedX2: ballSpeedX2,
+        ballSpeedY2: ballSpeedY2
       }
-      // ball: {
-      //   left: left + ballSpeedX,
-      //   top: top + ballSpeedY,
-      //   ballR: ballR,
-      //   ballSpeedX: ballSpeedX,
-      //   ballSpeedY: ballSpeedY
-      // },
-      // ball2: {
-      //   left2: left2 + ballSpeedX2,
-      //   top2: top2 + ballSpeedY2,
-      //   ballR2: ballR2,
-      //   ballSpeedX2: ballSpeedX2,
-      //   ballSpeedY2: ballSpeedY2
-      // }
     });
+
+    this.setState({
+      ball: {
+        left: left + ballSpeedX,
+        top: top + ballSpeedY,
+        ballR: ballR,
+        ballSpeedX: ballSpeedX,
+        ballSpeedY: ballSpeedY
+      },
+      ball2: {
+        left2: left2 + ballSpeedX2,
+        top2: top2 + ballSpeedY2,
+        ballR2: ballR2,
+        ballSpeedX2: ballSpeedX2,
+        ballSpeedY2: ballSpeedY2
+      },
+      you: {
+        left: this.state.you.left
+      },
+      p2: {
+        left: this.state.p2.left
+      }
+    });
+
+
   }
 
   checkBlock(currentBlock) {
@@ -248,21 +256,21 @@ export default class burst_Forth extends GameComponent {
           name: this.users[1], //change name
           x_cord: this.state.p2.left,
           score: 0 //change to the state score later
+        },
+        ball: {
+          left: this.state.ball.left,
+          top: this.state.ball.top,
+          ballR: this.state.ball.ballR,
+          ballSpeedX: this.state.ball.ballSpeedX,
+          ballSpeedY: this.state.ball.ballSpeedY
+        },
+        ball2: {
+          left2: this.state.ball2.left2,
+          top2: this.state.ball2.top2,
+          ballR2: this.state.ball2.ballR2,
+          ballSpeedX2: this.state.ball2.ballSpeedX2,
+          ballSpeedY2: this.state.ball2.ballSpeedY2
         }
-        // ball: {
-        //   left: this.state.ball.left,
-        //   top: this.state.ball.top,
-        //   ballR: this.state.ball.ballR,
-        //   ballSpeedX: this.state.ball.ballSpeedX,
-        //   ballSpeedY: this.state.ball.ballSpeedY
-        // },
-        // ball2: {
-        //   left2: this.state.ball2.left2,
-        //   top2: this.state.ball2.top2,
-        //   ballR2: this.state.ball2.ballR2,
-        //   ballSpeedX2: this.state.ball2.ballSpeedX2,
-        //   ballSpeedY2: this.state.ball2.ballSpeedY2
-        // }
       });
     }
     if (
@@ -280,21 +288,21 @@ export default class burst_Forth extends GameComponent {
           name: this.users[1], //change name
           x_cord: e.clientX,
           score: 0 //change to the state score later
+        },
+        ball: {
+          left: this.state.ball.left,
+          top: this.state.ball.top,
+          ballR: this.state.ball.ballR,
+          ballSpeedX: this.state.ball.ballSpeedX,
+          ballSpeedY: this.state.ball.ballSpeedY
+        },
+        ball2: {
+          left2: this.state.ball2.left2,
+          top2: this.state.ball2.top2,
+          ballR2: this.state.ball2.ballR2,
+          ballSpeedX2: this.state.ball2.ballSpeedX2,
+          ballSpeedY2: this.state.ball2.ballSpeedY2
         }
-        // ball: {
-        //   left: this.state.ball.left,
-        //   top: this.state.ball.top,
-        //   ballR: this.state.ball.ballR,
-        //   ballSpeedX: this.state.ball.ballSpeedX,
-        //   ballSpeedY: this.state.ball.ballSpeedY
-        // },
-        // ball2: {
-        //   left2: this.state.ball2.left2,
-        //   top2: this.state.ball2.top2,
-        //   ballR2: this.state.ball2.ballR2,
-        //   ballSpeedX2: this.state.ball2.ballSpeedX2,
-        //   ballSpeedY2: this.state.ball2.ballSpeedY2
-        // }
       });
     }
   }
@@ -302,21 +310,21 @@ export default class burst_Forth extends GameComponent {
   onSessionDataChanged(data) {
     console.log(data);
     this.setState({
-      // ball: {
-      //   left: data.ball.left,
-      //   top: data.ball.top,
-      //   ballR: data.ball.ballR,
-      //   ballSpeedX: data.ball.ballSpeedX,
-      //   ballSpeedY: data.ball.ballSpeedY
-      // },
-      // ball2: {
-      //   //use this later for the collsion of the other player
-      //   left2: data.ball2.left2,
-      //   top2: data.ball2.top2,
-      //   ballR2: data.ball2.ballR2,
-      //   ballSpeedX2: data.ball2.ballSpeedX2,
-      //   ballSpeedY2: data.ball2.ballSpeedY2
-      // },
+      ball: {
+        left: data.ball.left,
+        top: data.ball.top,
+        ballR: data.ball.ballR,
+        ballSpeedX: data.ball.ballSpeedX,
+        ballSpeedY: data.ball.ballSpeedY
+      },
+      ball2: {
+        //use this later for the collsion of the other player
+        left2: data.ball2.left2,
+        top2: data.ball2.top2,
+        ballR2: data.ball2.ballR2,
+        ballSpeedX2: data.ball2.ballSpeedX2,
+        ballSpeedY2: data.ball2.ballSpeedY2
+      },
       you: {
         left: data.P1.x_cord
       },
