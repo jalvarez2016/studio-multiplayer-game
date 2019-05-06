@@ -32,6 +32,15 @@ class block {
     this.left = left;
     this.durabilityNum = durabilityNum;
     this.color = durability[durabilityNum];
+    this.save = function() {
+      return {
+        width: this.width,
+        height: this.height,
+        top: this.top,
+        left: this.left,
+        durability: this.durabilityNum
+      };
+    };
   }
 }
 
@@ -88,7 +97,8 @@ export default class burst_Forth extends GameComponent {
       P1: {
         name: this.users[0],
         x_cord: this.state.you.left,
-        score: 0 //change to the state score later
+        score: 0, //change to the state score later
+        blocks: [block1.save(), block2.save(), block3.save()]
       },
       P2: {
         name: this.users[1],
@@ -220,6 +230,10 @@ export default class burst_Forth extends GameComponent {
   }
 
   checkBlock(currentBlock) {
+    if (this.isCreator) {
+      console.log("creator");
+      //push the blocks changes into firebase
+    }
     currentBlock.color = durability[currentBlock.durabilityNum];
 
     if (currentBlock.durabilityNum <= 0) {
