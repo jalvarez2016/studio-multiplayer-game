@@ -38,7 +38,8 @@ class block {
         height: this.height,
         top: this.top,
         left: this.left,
-        durability: this.durabilityNum
+        durability: this.durabilityNum,
+        color: this.color
       };
     };
   }
@@ -50,7 +51,7 @@ var block3 = new block(230, 10, H / 10, 20, 1);
 var blocks = [block1, block2, block3];
 
 var eBlock1 = new block(10, line + lineW + 10, H / 10, 20, 3);
-var eBlock2 = new block(120, line + lineW + 10, H / 10, 20, 3);
+var eBlock2 = new block(120, line + lineW + 10, H / 10, 20, 2);
 var eBlock3 = new block(230, line + lineW + 10, H / 10, 20, 1);
 var blocks2 = [eBlock1, eBlock2, eBlock3];
 
@@ -84,10 +85,12 @@ export default class burst_Forth extends GameComponent {
         ballSpeedY2: 3
       },
       you: {
-        left: W / 2
+        left: W / 2,
+        blocks: [block1.save(), block2.save(), block3.save()]
       },
       p2: {
-        left: (3 * W) / 4
+        left: (3 * W) / 4,
+        blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
       },
       youScore: 0
     };
@@ -103,7 +106,8 @@ export default class burst_Forth extends GameComponent {
       P2: {
         name: this.users[1],
         x_cord: this.state.p2.left,
-        score: 0 //change to the state score later
+        score: 0, //change to the state score later
+        blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
       }
     });
   }
@@ -166,9 +170,7 @@ export default class burst_Forth extends GameComponent {
           ballSpeedY: ballSpeedY
         }
       });
-    }
-
-    if (!this.isCreator) {
+    } else {
       //ball 2 collisions
 
       var { left2, top2, ballR2, ballSpeedX2, ballSpeedY2 } = this.state.ball2;
@@ -202,17 +204,17 @@ export default class burst_Forth extends GameComponent {
 
       for (var x = 0; x < blocks2.length; x++) {
         if (
-          left + ballR <= blocks2[x].left + blocks2[x].width &&
-          left >= blocks2[x].left
+          left2 + ballR2 <= blocks2[x].left + blocks2[x].width &&
+          left2 >= blocks2[x].left
         ) {
           if (
-            top + ballR <= blocks2[x].top + blocks2[x].height &&
-            top >= blocks2[x].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedY2 = -ballSpeedY2;
             var currentBlock2 = blocks2[x];
             currentBlock2.durabilityNum -= 1;
-            console.log(currentBlock.durabilityNum);
+            console.log(currentBlock2.durabilityNum);
             this.checkBlock(currentBlock2);
           }
         }
@@ -230,15 +232,33 @@ export default class burst_Forth extends GameComponent {
   }
 
   checkBlock(currentBlock) {
-    if (this.isCreator) {
-      console.log("creator");
-      //push the blocks changes into firebase
-    }
     currentBlock.color = durability[currentBlock.durabilityNum];
 
     if (currentBlock.durabilityNum <= 0) {
       currentBlock.height = 0;
       currentBlock.width = 0;
+    }
+
+    if (this.isCreator) {
+      this.getSessionDatabaseRef().update({
+        P1: {
+          name: this.users[0],
+          x_cord: this.state.you.left,
+          score: 0, //change to the state score later
+          blocks: [block1.save(), block2.save(), block3.save()]
+        }
+      });
+
+      //push the blocks changes into firebase
+    } else {
+      this.getSessionDatabaseRef().update({
+        P2: {
+          name: this.users[1],
+          x_cord: this.state.p2.left,
+          score: 0, //change to the state score later
+          blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
+        }
+      });
     }
   }
 
@@ -249,7 +269,8 @@ export default class burst_Forth extends GameComponent {
         P1: {
           name: this.users[0],
           x_cord: e.clientX,
-          score: 0 //change to the state score later
+          score: 0, //change to the state score later
+          blocks: [block1.save(), block2.save(), block3.save()]
         }
       });
     }
@@ -262,14 +283,15 @@ export default class burst_Forth extends GameComponent {
         P2: {
           name: this.users[1], //change name
           x_cord: e.clientX,
-          score: 0 //change to the state score later
+          score: 0, //change to the state score later
+          blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
         }
       });
     }
   }
 
   onSessionDataChanged(data) {
-    console.log(data);
+    //console.log(data);
     this.setState({
       ball: {
         left: data.ball.left,
@@ -287,10 +309,12 @@ export default class burst_Forth extends GameComponent {
         ballSpeedY2: data.ball2.ballSpeedY2
       },
       you: {
-        left: data.P1.x_cord
+        left: data.P1.x_cord,
+        blocks: data.P1.blocks
       },
       p2: {
-        left: data.P2.x_cord
+        left: data.P2.x_cord,
+        blocks: data.P2.blocks
       }
     });
   }
@@ -354,31 +378,31 @@ export default class burst_Forth extends GameComponent {
           <div
             style={{
               position: "absolute",
-              backgroundColor: block1.color,
-              width: block1.width + "px",
-              height: block1.height + "px",
-              top: block1.top + "px",
-              left: block1.left + "px"
+              backgroundColor: this.state.you.blocks[0].color,
+              width: this.state.you.blocks[0].width + "px",
+              height: this.state.you.blocks[0].height + "px",
+              top: this.state.you.blocks[0].top + "px",
+              left: this.state.you.blocks[0].left + "px"
             }}
           />
           <div
             style={{
               position: "absolute",
-              backgroundColor: block2.color,
-              width: block2.width + "px",
-              height: block2.height + "px",
-              top: block2.top + "px",
-              left: block2.left + "px"
+              backgroundColor: this.state.you.blocks[1].color,
+              width: this.state.you.blocks[1].width + "px",
+              height: this.state.you.blocks[1].height + "px",
+              top: this.state.you.blocks[1].top + "px",
+              left: this.state.you.blocks[1].left + "px"
             }}
           />
           <div
             style={{
               position: "absolute",
-              backgroundColor: block3.color,
-              width: block3.width + "px",
-              height: block3.height + "px",
-              top: block3.top + "px",
-              left: block3.left + "px"
+              backgroundColor: this.state.you.blocks[2].color,
+              width: this.state.you.blocks[2].width + "px",
+              height: this.state.you.blocks[2].height + "px",
+              top: this.state.you.blocks[2].top + "px",
+              left: this.state.you.blocks[2].left + "px"
             }}
           />
 
@@ -414,6 +438,36 @@ export default class burst_Forth extends GameComponent {
               borderRadius: "50%",
               top: this.state.ball2.top2 + "px",
               left: this.state.ball2.left2 + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[0].color,
+              width: this.state.p2.blocks[0].width + "px",
+              height: this.state.p2.blocks[0].height + "px",
+              top: this.state.p2.blocks[0].top + "px",
+              left: this.state.p2.blocks[0].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[1].color,
+              width: this.state.p2.blocks[1].width + "px",
+              height: this.state.p2.blocks[1].height + "px",
+              top: this.state.p2.blocks[1].top + "px",
+              left: this.state.p2.blocks[1].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[2].color,
+              width: this.state.p2.blocks[2].width + "px",
+              height: this.state.p2.blocks[2].height + "px",
+              top: this.state.p2.blocks[2].top + "px",
+              left: this.state.p2.blocks[2].left + "px"
             }}
           />
           {/* <div className="Enemy"
