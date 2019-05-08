@@ -45,14 +45,34 @@ class block {
   }
 }
 
-var block1 = new block(10, 10, H / 10, 20, 3);
-var block2 = new block(120, 10, H / 10, 20, 2);
-var block3 = new block(230, 10, H / 10, 20, 1);
-var blocks = [block1, block2, block3];
+//back row
+var block1 = new block(10, 10, W / 20, 20, 3);
+var block2 = new block(10, W / 20 + 20, W / 20, 20, 3);
+var block3 = new block(10, 2 * (W / 20) + 30, W / 20, 20, 3);
+//Second last row
+var block4 = new block(120, 10, W / 20, 20, 2);
+var block5 = new block(120, W / 20 + 20, W / 20, 20, 2);
+var block6 = new block(120, 2 * (W / 20) + 30, W / 20, 20, 2);
 
-var eBlock1 = new block(10, line + lineW + 10, H / 10, 20, 3);
-var eBlock2 = new block(120, line + lineW + 10, H / 10, 20, 2);
-var eBlock3 = new block(230, line + lineW + 10, H / 10, 20, 1);
+// first row
+var block7 = new block(230, 10, W / 20, 20, 1);
+var block8 = new block(230, W / 20 + 20, W / 20, 20, 1);
+var block9 = new block(230, 2 * (W / 20) + 30, W / 20, 20, 1);
+var blocks = [
+  block1,
+  block2,
+  block3,
+  block4,
+  block5,
+  block6,
+  block7,
+  block8,
+  block9
+];
+
+var eBlock1 = new block(10, line + lineW + 10, W / 20, 20, 3);
+var eBlock2 = new block(120, line + lineW + 10, W / 20, 20, 2);
+var eBlock3 = new block(230, line + lineW + 10, W / 20, 20, 1);
 var blocks2 = [eBlock1, eBlock2, eBlock3];
 
 export default class burst_Forth extends GameComponent {
@@ -85,11 +105,23 @@ export default class burst_Forth extends GameComponent {
         ballSpeedY2: 3
       },
       you: {
+        score: 0,
         left: W / 2,
-        blocks: [block1.save(), block2.save(), block3.save()]
+        blocks: [
+          block1.save(),
+          block2.save(),
+          block3.save(),
+          block4.save(),
+          block5.save(),
+          block6.save(),
+          block7.save(),
+          block8.save(),
+          block9.save()
+        ]
       },
       p2: {
         left: (3 * W) / 4,
+        score: 0,
         blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
       },
       youScore: 0
@@ -100,13 +132,23 @@ export default class burst_Forth extends GameComponent {
       P1: {
         name: this.users[0],
         x_cord: this.state.you.left,
-        score: 0, //change to the state score later
-        blocks: [block1.save(), block2.save(), block3.save()]
+        score: this.state.you.score, //change to the state score later
+        blocks: [
+          block1.save(),
+          block2.save(),
+          block3.save(),
+          block4.save(),
+          block5.save(),
+          block6.save(),
+          block7.save(),
+          block8.save(),
+          block9.save()
+        ]
       },
       P2: {
         name: this.users[1],
         x_cord: this.state.p2.left,
-        score: 0, //change to the state score later
+        score: this.state.p2.score, //change to the state score later
         blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
       }
     });
@@ -244,8 +286,18 @@ export default class burst_Forth extends GameComponent {
         P1: {
           name: this.users[0],
           x_cord: this.state.you.left,
-          score: 0, //change to the state score later
-          blocks: [block1.save(), block2.save(), block3.save()]
+          score: this.state.you.score + currentBlock.durabilityNum + 1, //change to the state score later
+          blocks: [
+            block1.save(),
+            block2.save(),
+            block3.save(),
+            block4.save(),
+            block5.save(),
+            block6.save(),
+            block7.save(),
+            block8.save(),
+            block9.save()
+          ]
         }
       });
 
@@ -255,7 +307,7 @@ export default class burst_Forth extends GameComponent {
         P2: {
           name: this.users[1],
           x_cord: this.state.p2.left,
-          score: 0, //change to the state score later
+          score: this.state.p2.score + currentBlock.durabilityNum + 1, //change to the state score later
           blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
         }
       });
@@ -269,8 +321,18 @@ export default class burst_Forth extends GameComponent {
         P1: {
           name: this.users[0],
           x_cord: e.clientX,
-          score: 0, //change to the state score later
-          blocks: [block1.save(), block2.save(), block3.save()]
+          score: this.state.you.score, //change to the state score later
+          blocks: [
+            block1.save(),
+            block2.save(),
+            block3.save(),
+            block4.save(),
+            block5.save(),
+            block6.save(),
+            block7.save(),
+            block8.save(),
+            block9.save()
+          ]
         }
       });
     }
@@ -283,7 +345,7 @@ export default class burst_Forth extends GameComponent {
         P2: {
           name: this.users[1], //change name
           x_cord: e.clientX,
-          score: 0, //change to the state score later
+          score: this.state.p2.score, //change to the state score later
           blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
         }
       });
@@ -309,10 +371,12 @@ export default class burst_Forth extends GameComponent {
         ballSpeedY2: data.ball2.ballSpeedY2
       },
       you: {
+        score: data.P1.score,
         left: data.P1.x_cord,
         blocks: data.P1.blocks
       },
       p2: {
+        score: data.P2.score,
         left: data.P2.x_cord,
         blocks: data.P2.blocks
       }
@@ -405,6 +469,66 @@ export default class burst_Forth extends GameComponent {
               left: this.state.you.blocks[2].left + "px"
             }}
           />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[3].color,
+              width: this.state.you.blocks[3].width + "px",
+              height: this.state.you.blocks[3].height + "px",
+              top: this.state.you.blocks[3].top + "px",
+              left: this.state.you.blocks[3].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[4].color,
+              width: this.state.you.blocks[4].width + "px",
+              height: this.state.you.blocks[4].height + "px",
+              top: this.state.you.blocks[4].top + "px",
+              left: this.state.you.blocks[4].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[5].color,
+              width: this.state.you.blocks[5].width + "px",
+              height: this.state.you.blocks[5].height + "px",
+              top: this.state.you.blocks[5].top + "px",
+              left: this.state.you.blocks[5].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[6].color,
+              width: this.state.you.blocks[6].width + "px",
+              height: this.state.you.blocks[6].height + "px",
+              top: this.state.you.blocks[6].top + "px",
+              left: this.state.you.blocks[6].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[7].color,
+              width: this.state.you.blocks[7].width + "px",
+              height: this.state.you.blocks[7].height + "px",
+              top: this.state.you.blocks[7].top + "px",
+              left: this.state.you.blocks[7].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[8].color,
+              width: this.state.you.blocks[8].width + "px",
+              height: this.state.you.blocks[8].height + "px",
+              top: this.state.you.blocks[8].top + "px",
+              left: this.state.you.blocks[8].left + "px"
+            }}
+          />
 
           <div
             className="line"
@@ -485,7 +609,12 @@ export default class burst_Forth extends GameComponent {
             color: "black"
           }}
         >
-          <p>You have {this.state.youScore} points</p>
+          <p>
+            {this.users[0]} has {this.state.you.score} points
+          </p>
+          <p>
+            {this.users[1]} has {this.state.p2.score} points
+          </p>
         </div>
       </div>
     );
