@@ -49,15 +49,23 @@ class block {
 var block1 = new block(10, 10, W / 20, 20, 3);
 var block2 = new block(10, W / 20 + 20, W / 20, 20, 3);
 var block3 = new block(10, 2 * (W / 20) + 30, W / 20, 20, 3);
+var block4 = new block(10, 3 * (W / 20) + 40, W / 20, 20, 3);
+var block5 = new block(10, 4 * (W / 20) + 50, W / 20, 20, 3);
+var block6 = new block(10, 5 * (W / 20) + 60, W / 20, 20, 3);
 //Second last row
-var block4 = new block(120, 10, W / 20, 20, 2);
-var block5 = new block(120, W / 20 + 20, W / 20, 20, 2);
-var block6 = new block(120, 2 * (W / 20) + 30, W / 20, 20, 2);
-
+var block7 = new block(120, 10, W / 20, 20, 2);
+var block8 = new block(120, W / 20 + 20, W / 20, 20, 2);
+var block9 = new block(120, 2 * (W / 20) + 30, W / 20, 20, 2);
+var block10 = new block(120, 3 * (W / 20) + 40, W / 20, 20, 2);
+var block11 = new block(120, 4 * (W / 20) + 50, W / 20, 20, 2);
+var block12 = new block(120, 5 * (W / 20) + 60, W / 20, 20, 2);
 // first row
-var block7 = new block(230, 10, W / 20, 20, 1);
-var block8 = new block(230, W / 20 + 20, W / 20, 20, 1);
-var block9 = new block(230, 2 * (W / 20) + 30, W / 20, 20, 1);
+var block13 = new block(230, 10, W / 20, 20, 1);
+var block14 = new block(230, W / 20 + 20, W / 20, 20, 1);
+var block15 = new block(230, 2 * (W / 20) + 30, W / 20, 20, 1);
+var block16 = new block(230, 3 * (W / 20) + 40, W / 20, 20, 1);
+var block17 = new block(230, 4 * (W / 20) + 50, W / 20, 20, 1);
+var block18 = new block(230, 5 * (W / 20) + 60, W / 20, 20, 1);
 var blocks = [
   block1,
   block2,
@@ -67,13 +75,61 @@ var blocks = [
   block6,
   block7,
   block8,
-  block9
+  block9,
+  block10,
+  block11,
+  block12,
+  block13,
+  block14,
+  block15,
+  block16,
+  block17,
+  block18
 ];
 
+//back row
 var eBlock1 = new block(10, line + lineW + 10, W / 20, 20, 3);
-var eBlock2 = new block(120, line + lineW + 10, W / 20, 20, 2);
-var eBlock3 = new block(230, line + lineW + 10, W / 20, 20, 1);
-var blocks2 = [eBlock1, eBlock2, eBlock3];
+var eBlock2 = new block(10, W / 20 + line + lineW + 20, W / 20, 20, 3);
+var eBlock3 = new block(10, 2 * (W / 20) + line + lineW + 30, W / 20, 20, 3);
+var eBlock4 = new block(10, 3 * (W / 20) + line + lineW + 40, W / 20, 20, 3);
+var eBlock5 = new block(10, 4 * (W / 20) + line + lineW + 50, W / 20, 20, 3);
+var eBlock6 = new block(10, 5 * (W / 20) + line + lineW + 60, W / 20, 20, 3);
+
+//middle row
+var eBlock7 = new block(120, line + lineW + 10, W / 20, 20, 2);
+var eBlock8 = new block(120, W / 20 + line + lineW + 20, W / 20, 20, 2);
+var eBlock9 = new block(120, 2 * (W / 20) + line + lineW + 30, W / 20, 20, 2);
+var eBlock10 = new block(120, 3 * (W / 20) + line + lineW + 40, W / 20, 20, 2);
+var eBlock11 = new block(120, 4 * (W / 20) + line + lineW + 50, W / 20, 20, 2);
+var eBlock12 = new block(120, 5 * (W / 20) + line + lineW + 60, W / 20, 20, 2);
+
+//front row
+var eBlock13 = new block(230, line + lineW + 10, W / 20, 20, 1);
+var eBlock14 = new block(230, W / 20 + line + lineW + 20, W / 20, 20, 1);
+var eBlock15 = new block(230, 2 * (W / 20) + line + lineW + 30, W / 20, 20, 1);
+var eBlock16 = new block(230, 3 * (W / 20) + line + lineW + 40, W / 20, 20, 1);
+var eBlock17 = new block(230, 4 * (W / 20) + line + lineW + 50, W / 20, 20, 1);
+var eBlock18 = new block(230, 5 * (W / 20) + line + lineW + 60, W / 20, 20, 1);
+var blocks2 = [
+  eBlock1,
+  eBlock2,
+  eBlock3,
+  eBlock4,
+  eBlock5,
+  eBlock6,
+  eBlock7,
+  eBlock8,
+  eBlock9,
+  eBlock10,
+  eBlock11,
+  eBlock12,
+  eBlock13,
+  eBlock14,
+  eBlock15,
+  eBlock16,
+  eBlock17,
+  eBlock18
+];
 
 export default class burst_Forth extends GameComponent {
   constructor(props) {
@@ -116,13 +172,41 @@ export default class burst_Forth extends GameComponent {
           block6.save(),
           block7.save(),
           block8.save(),
-          block9.save()
+          block9.save(),
+          block10.save(),
+          block11.save(),
+          block12.save(),
+          block13.save(),
+          block14.save(),
+          block15.save(),
+          block16.save(),
+          block17.save(),
+          block18.save()
         ]
       },
       p2: {
         left: (3 * W) / 4,
         score: 0,
-        blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
+        blocks: [
+          eBlock1.save(),
+          eBlock2.save(),
+          eBlock3.save(),
+          eBlock4.save(),
+          eBlock5.save(),
+          eBlock6.save(),
+          eBlock7.save(),
+          eBlock8.save(),
+          eBlock9.save(),
+          eBlock10.save(),
+          eBlock11.save(),
+          eBlock12.save(),
+          eBlock13.save(),
+          eBlock14.save(),
+          eBlock15.save(),
+          eBlock16.save(),
+          eBlock17.save(),
+          eBlock18.save()
+        ]
       },
       youScore: 0
     };
@@ -142,14 +226,42 @@ export default class burst_Forth extends GameComponent {
           block6.save(),
           block7.save(),
           block8.save(),
-          block9.save()
+          block9.save(),
+          block10.save(),
+          block11.save(),
+          block12.save(),
+          block13.save(),
+          block14.save(),
+          block15.save(),
+          block16.save(),
+          block17.save(),
+          block18.save()
         ]
       },
       P2: {
         name: this.users[1],
         x_cord: this.state.p2.left,
         score: this.state.p2.score, //change to the state score later
-        blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
+        blocks: [
+          eBlock1.save(),
+          eBlock2.save(),
+          eBlock3.save(),
+          eBlock4.save(),
+          eBlock5.save(),
+          eBlock6.save(),
+          eBlock7.save(),
+          eBlock8.save(),
+          eBlock9.save(),
+          eBlock10.save(),
+          eBlock11.save(),
+          eBlock12.save(),
+          eBlock13.save(),
+          eBlock14.save(),
+          eBlock15.save(),
+          eBlock16.save(),
+          eBlock17.save(),
+          eBlock18.save()
+        ]
       }
     });
   }
@@ -296,7 +408,16 @@ export default class burst_Forth extends GameComponent {
             block6.save(),
             block7.save(),
             block8.save(),
-            block9.save()
+            block9.save(),
+            block10.save(),
+            block11.save(),
+            block12.save(),
+            block13.save(),
+            block14.save(),
+            block15.save(),
+            block16.save(),
+            block17.save(),
+            block18.save()
           ]
         }
       });
@@ -308,7 +429,26 @@ export default class burst_Forth extends GameComponent {
           name: this.users[1],
           x_cord: this.state.p2.left,
           score: this.state.p2.score + currentBlock.durabilityNum + 1, //change to the state score later
-          blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
+          blocks: [
+            eBlock1.save(),
+            eBlock2.save(),
+            eBlock3.save(),
+            eBlock4.save(),
+            eBlock5.save(),
+            eBlock6.save(),
+            eBlock7.save(),
+            eBlock8.save(),
+            eBlock9.save(),
+            eBlock10.save(),
+            eBlock11.save(),
+            eBlock12.save(),
+            eBlock13.save(),
+            eBlock14.save(),
+            eBlock15.save(),
+            eBlock16.save(),
+            eBlock17.save(),
+            eBlock18.save()
+          ]
         }
       });
     }
@@ -331,7 +471,16 @@ export default class burst_Forth extends GameComponent {
             block6.save(),
             block7.save(),
             block8.save(),
-            block9.save()
+            block9.save(),
+            block10.save(),
+            block11.save(),
+            block12.save(),
+            block13.save(),
+            block14.save(),
+            block15.save(),
+            block16.save(),
+            block17.save(),
+            block18.save()
           ]
         }
       });
@@ -346,7 +495,26 @@ export default class burst_Forth extends GameComponent {
           name: this.users[1], //change name
           x_cord: e.clientX,
           score: this.state.p2.score, //change to the state score later
-          blocks: [eBlock1.save(), eBlock2.save(), eBlock3.save()]
+          blocks: [
+            eBlock1.save(),
+            eBlock2.save(),
+            eBlock3.save(),
+            eBlock4.save(),
+            eBlock5.save(),
+            eBlock6.save(),
+            eBlock7.save(),
+            eBlock8.save(),
+            eBlock9.save(),
+            eBlock10.save(),
+            eBlock11.save(),
+            eBlock12.save(),
+            eBlock13.save(),
+            eBlock14.save(),
+            eBlock15.save(),
+            eBlock16.save(),
+            eBlock17.save(),
+            eBlock18.save()
+          ]
         }
       });
     }
@@ -529,6 +697,96 @@ export default class burst_Forth extends GameComponent {
               left: this.state.you.blocks[8].left + "px"
             }}
           />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[9].color,
+              width: this.state.you.blocks[9].width + "px",
+              height: this.state.you.blocks[9].height + "px",
+              top: this.state.you.blocks[9].top + "px",
+              left: this.state.you.blocks[9].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[10].color,
+              width: this.state.you.blocks[10].width + "px",
+              height: this.state.you.blocks[10].height + "px",
+              top: this.state.you.blocks[10].top + "px",
+              left: this.state.you.blocks[10].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[11].color,
+              width: this.state.you.blocks[11].width + "px",
+              height: this.state.you.blocks[11].height + "px",
+              top: this.state.you.blocks[11].top + "px",
+              left: this.state.you.blocks[11].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[12].color,
+              width: this.state.you.blocks[12].width + "px",
+              height: this.state.you.blocks[12].height + "px",
+              top: this.state.you.blocks[12].top + "px",
+              left: this.state.you.blocks[12].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[13].color,
+              width: this.state.you.blocks[13].width + "px",
+              height: this.state.you.blocks[13].height + "px",
+              top: this.state.you.blocks[13].top + "px",
+              left: this.state.you.blocks[13].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[14].color,
+              width: this.state.you.blocks[14].width + "px",
+              height: this.state.you.blocks[14].height + "px",
+              top: this.state.you.blocks[14].top + "px",
+              left: this.state.you.blocks[14].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[15].color,
+              width: this.state.you.blocks[15].width + "px",
+              height: this.state.you.blocks[15].height + "px",
+              top: this.state.you.blocks[15].top + "px",
+              left: this.state.you.blocks[15].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[16].color,
+              width: this.state.you.blocks[16].width + "px",
+              height: this.state.you.blocks[16].height + "px",
+              top: this.state.you.blocks[16].top + "px",
+              left: this.state.you.blocks[16].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.you.blocks[17].color,
+              width: this.state.you.blocks[17].width + "px",
+              height: this.state.you.blocks[17].height + "px",
+              top: this.state.you.blocks[17].top + "px",
+              left: this.state.you.blocks[17].left + "px"
+            }}
+          />
 
           <div
             className="line"
@@ -592,6 +850,166 @@ export default class burst_Forth extends GameComponent {
               height: this.state.p2.blocks[2].height + "px",
               top: this.state.p2.blocks[2].top + "px",
               left: this.state.p2.blocks[2].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[3].color,
+              width: this.state.p2.blocks[3].width + "px",
+              height: this.state.p2.blocks[3].height + "px",
+              top: this.state.p2.blocks[3].top + "px",
+              left: this.state.p2.blocks[3].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[4].color,
+              width: this.state.p2.blocks[4].width + "px",
+              height: this.state.p2.blocks[4].height + "px",
+              top: this.state.p2.blocks[4].top + "px",
+              left: this.state.p2.blocks[4].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[5].color,
+              width: this.state.p2.blocks[5].width + "px",
+              height: this.state.p2.blocks[5].height + "px",
+              top: this.state.p2.blocks[5].top + "px",
+              left: this.state.p2.blocks[5].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[6].color,
+              width: this.state.p2.blocks[6].width + "px",
+              height: this.state.p2.blocks[6].height + "px",
+              top: this.state.p2.blocks[6].top + "px",
+              left: this.state.p2.blocks[6].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[7].color,
+              width: this.state.p2.blocks[7].width + "px",
+              height: this.state.p2.blocks[7].height + "px",
+              top: this.state.p2.blocks[7].top + "px",
+              left: this.state.p2.blocks[7].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[8].color,
+              width: this.state.p2.blocks[8].width + "px",
+              height: this.state.p2.blocks[8].height + "px",
+              top: this.state.p2.blocks[8].top + "px",
+              left: this.state.p2.blocks[8].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[8].color,
+              width: this.state.p2.blocks[8].width + "px",
+              height: this.state.p2.blocks[8].height + "px",
+              top: this.state.p2.blocks[8].top + "px",
+              left: this.state.p2.blocks[8].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[9].color,
+              width: this.state.p2.blocks[9].width + "px",
+              height: this.state.p2.blocks[9].height + "px",
+              top: this.state.p2.blocks[9].top + "px",
+              left: this.state.p2.blocks[9].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[10].color,
+              width: this.state.p2.blocks[10].width + "px",
+              height: this.state.p2.blocks[10].height + "px",
+              top: this.state.p2.blocks[10].top + "px",
+              left: this.state.p2.blocks[10].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[11].color,
+              width: this.state.p2.blocks[11].width + "px",
+              height: this.state.p2.blocks[11].height + "px",
+              top: this.state.p2.blocks[11].top + "px",
+              left: this.state.p2.blocks[11].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[12].color,
+              width: this.state.p2.blocks[12].width + "px",
+              height: this.state.p2.blocks[12].height + "px",
+              top: this.state.p2.blocks[12].top + "px",
+              left: this.state.p2.blocks[12].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[13].color,
+              width: this.state.p2.blocks[13].width + "px",
+              height: this.state.p2.blocks[13].height + "px",
+              top: this.state.p2.blocks[13].top + "px",
+              left: this.state.p2.blocks[13].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[14].color,
+              width: this.state.p2.blocks[14].width + "px",
+              height: this.state.p2.blocks[14].height + "px",
+              top: this.state.p2.blocks[14].top + "px",
+              left: this.state.p2.blocks[14].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[15].color,
+              width: this.state.p2.blocks[15].width + "px",
+              height: this.state.p2.blocks[15].height + "px",
+              top: this.state.p2.blocks[15].top + "px",
+              left: this.state.p2.blocks[15].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[16].color,
+              width: this.state.p2.blocks[16].width + "px",
+              height: this.state.p2.blocks[16].height + "px",
+              top: this.state.p2.blocks[16].top + "px",
+              left: this.state.p2.blocks[16].left + "px"
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              backgroundColor: this.state.p2.blocks[17].color,
+              width: this.state.p2.blocks[17].width + "px",
+              height: this.state.p2.blocks[17].height + "px",
+              top: this.state.p2.blocks[17].top + "px",
+              left: this.state.p2.blocks[17].left + "px"
             }}
           />
           {/* <div className="Enemy"
