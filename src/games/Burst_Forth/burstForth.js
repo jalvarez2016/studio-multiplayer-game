@@ -289,10 +289,7 @@ export default class burst_Forth extends GameComponent {
         this.state.you.left - derp - paddleWidth / 2 < left + ballR &&
         this.state.you.left - derp + paddleWidth / 2 > left + ballR
       ) {
-        if (
-          top + ballR / 2 >= paddleY &&
-          top + ballR / 2 <= paddleY + paddleHeight
-        ) {
+        if (top + ballR >= paddleY && top + ballR <= paddleY + paddleHeight) {
           ballSpeedY = -ballSpeedY;
           var delta = left - (this.state.you.left - derp + paddleHeight / 2);
           ballSpeedX = delta * 0.15;
@@ -303,11 +300,11 @@ export default class burst_Forth extends GameComponent {
 
       for (var i = 0; i < blocks.length; i++) {
         if (
-          left + ballR / 2 <= blocks[i].left + blocks[i].width &&
+          left + ballR <= blocks[i].left + blocks[i].width &&
           left >= blocks[i].left
         ) {
           if (
-            top + ballR / 2 <= blocks[i].top + blocks[i].height &&
+            top + ballR <= blocks[i].top + blocks[i].height &&
             top >= blocks[i].top
           ) {
             ballSpeedY = -ballSpeedY;
@@ -351,7 +348,7 @@ export default class burst_Forth extends GameComponent {
         this.state.p2.left - derp - paddleWidth / 2 < left2 &&
         this.state.p2.left - derp + paddleWidth / 2 > left2 + ballR2
       ) {
-        if (top2 >= paddleY && top2 + ballR2 / 2 <= paddleY + paddleHeight) {
+        if (top2 >= paddleY && top2 + ballR2 <= paddleY + paddleHeight) {
           ballSpeedY2 = -ballSpeedY2;
           var delta2 = left - (this.state.you.left - derp + paddleHeight / 2);
           ballSpeedX = delta2 * 0.25;
