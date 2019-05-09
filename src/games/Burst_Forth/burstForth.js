@@ -25,13 +25,14 @@ var durability = {
 };
 
 class block {
-  constructor(top, left, width, height, durabilityNum) {
+  constructor(top, left, width, height) {
+    var ranDurability = Math.floor(Math.random() * 3) + 1;
     this.width = width;
     this.height = height;
     this.top = top;
     this.left = left;
-    this.durabilityNum = durabilityNum;
-    this.color = durability[durabilityNum];
+    this.durabilityNum = ranDurability;
+    this.color = durability[ranDurability];
     this.save = function() {
       return {
         width: this.width,
@@ -46,26 +47,26 @@ class block {
 }
 
 //back row
-var block1 = new block(10, 10, W / 20, 20, 3);
-var block2 = new block(10, W / 20 + 20, W / 20, 20, 3);
-var block3 = new block(10, 2 * (W / 20) + 30, W / 20, 20, 3);
-var block4 = new block(10, 3 * (W / 20) + 40, W / 20, 20, 3);
-var block5 = new block(10, 4 * (W / 20) + 50, W / 20, 20, 3);
-var block6 = new block(10, 5 * (W / 20) + 60, W / 20, 20, 3);
+var block1 = new block(10, 10, W / 20, 20);
+var block2 = new block(10, W / 20 + 20, W / 20, 20);
+var block3 = new block(10, 2 * (W / 20) + 30, W / 20, 20);
+var block4 = new block(10, 3 * (W / 20) + 40, W / 20, 20);
+var block5 = new block(10, 4 * (W / 20) + 50, W / 20, 20);
+var block6 = new block(10, 5 * (W / 20) + 60, W / 20, 20);
 //Second last row
-var block7 = new block(120, 10, W / 20, 20, 2);
-var block8 = new block(120, W / 20 + 20, W / 20, 20, 2);
-var block9 = new block(120, 2 * (W / 20) + 30, W / 20, 20, 2);
-var block10 = new block(120, 3 * (W / 20) + 40, W / 20, 20, 2);
-var block11 = new block(120, 4 * (W / 20) + 50, W / 20, 20, 2);
-var block12 = new block(120, 5 * (W / 20) + 60, W / 20, 20, 2);
+var block7 = new block(120, 10, W / 20, 20);
+var block8 = new block(120, W / 20 + 20, W / 20, 20);
+var block9 = new block(120, 2 * (W / 20) + 30, W / 20, 20);
+var block10 = new block(120, 3 * (W / 20) + 40, W / 20, 20);
+var block11 = new block(120, 4 * (W / 20) + 50, W / 20, 20);
+var block12 = new block(120, 5 * (W / 20) + 60, W / 20, 20);
 // first row
-var block13 = new block(230, 10, W / 20, 20, 1);
-var block14 = new block(230, W / 20 + 20, W / 20, 20, 1);
-var block15 = new block(230, 2 * (W / 20) + 30, W / 20, 20, 1);
-var block16 = new block(230, 3 * (W / 20) + 40, W / 20, 20, 1);
-var block17 = new block(230, 4 * (W / 20) + 50, W / 20, 20, 1);
-var block18 = new block(230, 5 * (W / 20) + 60, W / 20, 20, 1);
+var block13 = new block(230, 10, W / 20, 20);
+var block14 = new block(230, W / 20 + 20, W / 20, 20);
+var block15 = new block(230, 2 * (W / 20) + 30, W / 20, 20);
+var block16 = new block(230, 3 * (W / 20) + 40, W / 20, 20);
+var block17 = new block(230, 4 * (W / 20) + 50, W / 20, 20);
+var block18 = new block(230, 5 * (W / 20) + 60, W / 20, 20);
 var blocks = [
   block1,
   block2,
@@ -88,20 +89,20 @@ var blocks = [
 ];
 
 //back row
-var eBlock1 = new block(10, line + lineW + 10, W / 20, 20, 3);
-var eBlock2 = new block(10, W / 20 + line + lineW + 20, W / 20, 20, 3);
-var eBlock3 = new block(10, 2 * (W / 20) + line + lineW + 30, W / 20, 20, 3);
-var eBlock4 = new block(10, 3 * (W / 20) + line + lineW + 40, W / 20, 20, 3);
-var eBlock5 = new block(10, 4 * (W / 20) + line + lineW + 50, W / 20, 20, 3);
-var eBlock6 = new block(10, 5 * (W / 20) + line + lineW + 60, W / 20, 20, 3);
+var eBlock1 = new block(10, line + lineW + 10, W / 20, 20);
+var eBlock2 = new block(10, W / 20 + line + lineW + 20, W / 20, 20);
+var eBlock3 = new block(10, 2 * (W / 20) + line + lineW + 30, W / 20, 20);
+var eBlock4 = new block(10, 3 * (W / 20) + line + lineW + 40, W / 20, 20);
+var eBlock5 = new block(10, 4 * (W / 20) + line + lineW + 50, W / 20, 20);
+var eBlock6 = new block(10, 5 * (W / 20) + line + lineW + 60, W / 20, 20);
 
 //middle row
-var eBlock7 = new block(120, line + lineW + 10, W / 20, 20, 2);
-var eBlock8 = new block(120, W / 20 + line + lineW + 20, W / 20, 20, 2);
-var eBlock9 = new block(120, 2 * (W / 20) + line + lineW + 30, W / 20, 20, 2);
-var eBlock10 = new block(120, 3 * (W / 20) + line + lineW + 40, W / 20, 20, 2);
-var eBlock11 = new block(120, 4 * (W / 20) + line + lineW + 50, W / 20, 20, 2);
-var eBlock12 = new block(120, 5 * (W / 20) + line + lineW + 60, W / 20, 20, 2);
+var eBlock7 = new block(120, line + lineW + 10, W / 20, 20);
+var eBlock8 = new block(120, W / 20 + line + lineW + 20, W / 20, 20);
+var eBlock9 = new block(120, 2 * (W / 20) + line + lineW + 30, W / 20, 20);
+var eBlock10 = new block(120, 3 * (W / 20) + line + lineW + 40, W / 20, 20);
+var eBlock11 = new block(120, 4 * (W / 20) + line + lineW + 50, W / 20, 20);
+var eBlock12 = new block(120, 5 * (W / 20) + line + lineW + 60, W / 20, 20);
 
 //front row
 var eBlock13 = new block(230, line + lineW + 10, W / 20, 20, 1);
@@ -352,8 +353,8 @@ export default class burst_Forth extends GameComponent {
       ) {
         if (top2 >= paddleY && top2 + ballR2 / 2 <= paddleY + paddleHeight) {
           ballSpeedY2 = -ballSpeedY2;
-          var delta = left - (this.state.you.left - derp + paddleHeight / 2);
-          ballSpeedX = delta * 0.25;
+          var delta2 = left - (this.state.you.left - derp + paddleHeight / 2);
+          ballSpeedX = delta2 * 0.25;
         }
       }
 
@@ -401,7 +402,7 @@ export default class burst_Forth extends GameComponent {
         P1: {
           name: this.users[0],
           x_cord: this.state.you.left,
-          score: this.state.you.score + currentBlock.durabilityNum + 1, //change to the state score later
+          score: this.state.you.score + 1, //change to the state score later
           blocks: [
             block1.save(),
             block2.save(),
@@ -431,7 +432,7 @@ export default class burst_Forth extends GameComponent {
         P2: {
           name: this.users[1],
           x_cord: this.state.p2.left,
-          score: this.state.p2.score + currentBlock.durabilityNum + 1, //change to the state score later
+          score: this.state.p2.score + 1, //change to the state score later
           blocks: [
             eBlock1.save(),
             eBlock2.save(),
@@ -1026,14 +1027,27 @@ export default class burst_Forth extends GameComponent {
         </div>
         <div
           style={{
+            height: "40px",
+            width: "100%",
+            textAlign: "center",
             position: "absolute",
             color: "black"
           }}
         >
-          <p>
+          <p
+            style={{
+              width: "50%",
+              float: "left"
+            }}
+          >
             {this.users[0]} has {this.state.you.score} points
           </p>
-          <p>
+          <p
+            style={{
+              width: "50%",
+              float: "right"
+            }}
+          >
             {this.users[1]} has {this.state.p2.score} points
           </p>
         </div>
