@@ -272,10 +272,10 @@ export default class burst_Forth extends GameComponent {
       var { left, top, ballR, ballSpeedX, ballSpeedY } = this.state.ball;
 
       //wall collisions
-      if (left + ballR > W || ballR + left < 0) {
+      if (left + ballR / 2 > W || ballR + left < 0) {
         ballSpeedX = -ballSpeedX;
       }
-      if (top + ballR > H || top < 0) {
+      if (top + ballR / 2 > H || top < 0) {
         ballSpeedY = -ballSpeedY;
       }
 
@@ -289,10 +289,10 @@ export default class burst_Forth extends GameComponent {
         this.state.you.left - derp - paddleWidth / 2 < left + ballR &&
         this.state.you.left - derp + paddleWidth / 2 > left + ballR
       ) {
-        if (top + ballR >= paddleY && top + ballR <= paddleY + paddleHeight) {
+        if (top + ballR >= paddleY && top <= paddleY + paddleHeight) {
           ballSpeedY = -ballSpeedY;
-          var delta = left - (this.state.you.left - derp + paddleHeight / 2);
-          ballSpeedX = delta * 0.15;
+          // var delta = left - (this.state.you.left - derp + paddleHeight / 2);
+          // ballSpeedX = delta * 0.15;
         }
       }
 
@@ -301,6 +301,95 @@ export default class burst_Forth extends GameComponent {
       for (var i = 0; i < blocks.length; i++) {
         var currentBlock = blocks[i];
         if (
+          left + ballR >= blocks[i].left &&
+          left + ballR <= blocks[i].left + 2
+        ) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          }
+        } else if (
+          left + ballR >= blocks[i].left + blocks[i].width &&
+          left + ballR <= blocks[i].left + blocks[i].width + 2
+        ) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          }
+        } else if (
+          left >= blocks[i].left + blocks[i].width &&
+          left <= blocks[i].left + blocks[i].width + 2
+        ) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          }
+        } else if (left >= blocks[i].left && left <= blocks[i].left + 2) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          }
+        } else if (
           left + ballR <= blocks[i].left + blocks[i].width &&
           left + ballR >= blocks[i].left
         ) {
@@ -387,19 +476,137 @@ export default class burst_Forth extends GameComponent {
       //block collsions
 
       for (var x = 0; x < blocks2.length; x++) {
+        var currentBlock2;
         if (
-          left2 + ballR2 <= blocks2[x].left + blocks2[x].width &&
-          left2 >= blocks2[x].left
+          left2 + ballR2 >= blocks2[i].left &&
+          left2 + ballR2 <= blocks2[i].left + 2
         ) {
           if (
-            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
-            top2 >= blocks2[x].top
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
           ) {
+            ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
-            var currentBlock2 = blocks2[x];
             currentBlock2.durabilityNum -= 1;
             console.log(currentBlock2.durabilityNum);
             this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 + ballR2 >= blocks2[i].left + blocks2[i].width &&
+          left2 + ballR2 <= blocks2[i].left + blocks2[i].width + 2
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 >= blocks2[i].left + blocks2[i].width &&
+          left2 <= blocks2[i].left + blocks2[i].width + 2
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          }
+        } else if (left2 >= blocks2[i].left && left2 <= blocks2[i].left + 2) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 + ballR2 <= blocks2[i].left + blocks2[i].width &&
+          left2 + ballR2 >= blocks2[i].left
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 <= blocks2[i].left + blocks2[i].width &&
+          left2 >= blocks2[i]
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            console.log(currentBlock2.durabilityNum);
+            this.checkBlock(currentBlock);
           }
         }
       }
