@@ -150,16 +150,16 @@ export default class burst_Forth extends GameComponent {
         left: W / 4,
         top: paddleY - 50,
         ballR: 10,
-        ballSpeedX: 4,
-        ballSpeedY: 3
+        ballSpeedX: -4,
+        ballSpeedY: -3
       },
       ball2: {
         //use this later for the collsion of the other player
         left2: (3 * W) / 4,
         top2: paddleY - 50,
         ballR2: 10,
-        ballSpeedX2: 4,
-        ballSpeedY2: 3
+        ballSpeedX2: -4,
+        ballSpeedY2: -3
       },
       you: {
         score: 0,
@@ -299,16 +299,45 @@ export default class burst_Forth extends GameComponent {
       //block collsions
 
       for (var i = 0; i < blocks.length; i++) {
+        var currentBlock = blocks[i];
         if (
           left + ballR <= blocks[i].left + blocks[i].width &&
-          left >= blocks[i].left
+          left + ballR >= blocks[i].left
         ) {
           if (
             top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
             top >= blocks[i].top
           ) {
             ballSpeedY = -ballSpeedY;
-            var currentBlock = blocks[i];
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          }
+        } else if (
+          left <= blocks[i].left + blocks[i].width &&
+          left >= blocks[i]
+        ) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            console.log(currentBlock.durabilityNum);
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedY = -ballSpeedY;
             currentBlock.durabilityNum -= 1;
             console.log(currentBlock.durabilityNum);
             this.checkBlock(currentBlock);
