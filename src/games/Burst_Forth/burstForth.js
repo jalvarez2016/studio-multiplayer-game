@@ -627,7 +627,7 @@ export default class burst_Forth extends GameComponent {
           }
         });
       }
-    } else {
+    } else if (this.isCreator) {
       this.getSessionDatabaseRef().update({
         P1: {
           name: this.users[0] + "has won and ",
