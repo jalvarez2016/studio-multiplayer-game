@@ -209,9 +209,9 @@ export default class burst_Forth extends GameComponent {
           eBlock16.save(),
           eBlock17.save(),
           eBlock18.save()
-        ]
-      },
-      win: false
+        ],
+        win: false
+      }
     };
     this.getSessionDatabaseRef().set({
       ball: this.state.ball,
@@ -239,7 +239,8 @@ export default class burst_Forth extends GameComponent {
           block16.save(),
           block17.save(),
           block18.save()
-        ]
+        ],
+        win: false
       },
       P2: {
         name: this.users[1],
@@ -264,26 +265,94 @@ export default class burst_Forth extends GameComponent {
           eBlock16.save(),
           eBlock17.save(),
           eBlock18.save()
-        ]
-      },
-      win: false
+        ],
+        win: false
+      }
     });
   }
 
   checkWin() {
     if (this.isCreator) {
+      numGone = 0;
       for (var q = 0; q < blocks.length; q++) {
         if (blocks[q].durabilityNum === 0) {
           numGone += 1;
-          console.log(numGone, blocks.length);
-        }
-        if (numGone === blocks.length - 1) {
+          console.log(numGone, blocks.length, blocks[q].durabilityNum);
+        } else if (numGone === blocks.length) {
           console.log("win");
           this.getSessionDatabaseRef().update({
-            win: true
+            P1: {
+              name: this.users[0],
+              x_cord: this.state.you.left,
+              score: numGone, //change to the state score later
+              blocks: [
+                block1.save(),
+                block2.save(),
+                block3.save(),
+                block4.save(),
+                block5.save(),
+                block6.save(),
+                block7.save(),
+                block8.save(),
+                block9.save(),
+                block10.save(),
+                block11.save(),
+                block12.save(),
+                block13.save(),
+                block14.save(),
+                block15.save(),
+                block16.save(),
+                block17.save(),
+                block18.save()
+              ],
+              win: true
+            }
           });
           return true;
-        } else if (q === blocks.length) {
+        } else {
+          numGone = 0;
+          return false;
+        }
+      }
+    } else {
+      numGone = 0;
+      for (var x = 0; x < blocks2.length; x++) {
+        if (blocks2[x].durabilityNum === 0) {
+          numGone += 1;
+          console.log(numGone, blocks2.length, blocks2[q].durabilityNum);
+        } else if (numGone === blocks.length) {
+          console.log("win");
+          this.getSessionDatabaseRef().update({
+            P2: {
+              name: this.users[1],
+              x_cord: this.state.p2.left,
+              score: numGone, //change to the state score later
+              blocks: [
+                eBlock1.save(),
+                eBlock2.save(),
+                eBlock3.save(),
+                eBlock4.save(),
+                eBlock5.save(),
+                eBlock6.save(),
+                eBlock7.save(),
+                eBlock8.save(),
+                eBlock9.save(),
+                eBlock10.save(),
+                eBlock11.save(),
+                eBlock12.save(),
+                eBlock13.save(),
+                eBlock14.save(),
+                eBlock15.save(),
+                eBlock16.save(),
+                eBlock17.save(),
+                eBlock18.save()
+              ],
+              win: true
+            }
+          });
+          return true;
+        } else {
+          numGone = 0;
           return false;
         }
       }
@@ -291,368 +360,331 @@ export default class burst_Forth extends GameComponent {
   }
 
   ballMove() {
-    if (!this.checkWin()) {
-      this.checkWin();
-      if (this.isCreator) {
-        var { left, top, ballR, ballSpeedX, ballSpeedY } = this.state.ball;
+    if (this.isCreator) {
+      var { left, top, ballR, ballSpeedX, ballSpeedY } = this.state.ball;
 
-        //wall collisions
-        if (left + ballR / 2 > W || ballR + left < 0) {
-          ballSpeedX = -ballSpeedX;
-        }
-        if (top + ballR / 2 > H || top < 0) {
-          ballSpeedY = -ballSpeedY;
-        }
-
-        //middle collision
-        if (left + ballR > line) {
-          ballSpeedX = -ballSpeedX;
-        }
-
-        //paddle collisions
-        if (
-          this.state.you.left - derp - paddleWidth / 2 < left + ballR &&
-          this.state.you.left - derp + paddleWidth / 2 > left + ballR
-        ) {
-          if (top + ballR >= paddleY && top <= paddleY + paddleHeight) {
-            ballSpeedY = -ballSpeedY;
-            // var delta = left - (this.state.you.left - derp + paddleHeight / 2);
-            // ballSpeedX = delta * 0.15;
-          }
-        }
-
-        //block collsions
-
-        for (var i = 0; i < blocks.length; i++) {
-          var currentBlock = blocks[i];
-          if (
-            left + ballR >= blocks[i].left &&
-            left + ballR <= blocks[i].left + 2
-          ) {
-            if (
-              top + ballR <= blocks[i].top + blocks[i].height &&
-              top + ballR >= blocks[i].top
-            ) {
-              ballSpeedX = -ballSpeedX;
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            } else if (
-              top <= blocks[i].top + blocks[i].height &&
-              top >= blocks[i].top
-            ) {
-              ballSpeedX = -ballSpeedX;
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            }
-          } else if (
-            left + ballR >= blocks[i].left + blocks[i].width &&
-            left + ballR <= blocks[i].left + blocks[i].width + 2
-          ) {
-            if (
-              top + ballR <= blocks[i].top + blocks[i].height &&
-              top + ballR >= blocks[i].top
-            ) {
-              ballSpeedX = -ballSpeedX;
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            } else if (
-              top <= blocks[i].top + blocks[i].height &&
-              top >= blocks[i].top
-            ) {
-              ballSpeedX = -ballSpeedX;
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            }
-          } else if (
-            left >= blocks[i].left + blocks[i].width &&
-            left <= blocks[i].left + blocks[i].width + 2
-          ) {
-            if (
-              top + ballR <= blocks[i].top + blocks[i].height &&
-              top + ballR >= blocks[i].top
-            ) {
-              ballSpeedX = -ballSpeedX;
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            } else if (
-              top <= blocks[i].top + blocks[i].height &&
-              top >= blocks[i].top
-            ) {
-              ballSpeedX = -ballSpeedX;
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            }
-          } else if (left >= blocks[i].left && left <= blocks[i].left + 2) {
-            if (
-              top + ballR <= blocks[i].top + blocks[i].height &&
-              top + ballR >= blocks[i].top
-            ) {
-              ballSpeedX = -ballSpeedX;
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            } else if (
-              top <= blocks[i].top + blocks[i].height &&
-              top >= blocks[i].top
-            ) {
-              ballSpeedX = -ballSpeedX;
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            }
-          } else if (
-            left + ballR <= blocks[i].left + blocks[i].width &&
-            left + ballR >= blocks[i].left
-          ) {
-            if (
-              top + ballR <= blocks[i].top + blocks[i].height &&
-              top + ballR >= blocks[i].top
-            ) {
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            } else if (
-              top <= blocks[i].top + blocks[i].height &&
-              top >= blocks[i].top
-            ) {
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            }
-          } else if (
-            left <= blocks[i].left + blocks[i].width &&
-            left >= blocks[i]
-          ) {
-            if (
-              top + ballR <= blocks[i].top + blocks[i].height &&
-              top + ballR >= blocks[i].top
-            ) {
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            } else if (
-              top <= blocks[i].top + blocks[i].height &&
-              top >= blocks[i].top
-            ) {
-              ballSpeedY = -ballSpeedY;
-              currentBlock.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            }
-          }
-        }
-
-        this.getSessionDatabaseRef().update({
-          ball: {
-            left: left + ballSpeedX,
-            top: top + ballSpeedY,
-            ballR: ballR,
-            ballSpeedX: ballSpeedX,
-            ballSpeedY: ballSpeedY
-          }
-        });
-      } else {
-        //ball 2 collisions
-
-        var {
-          left2,
-          top2,
-          ballR2,
-          ballSpeedX2,
-          ballSpeedY2
-        } = this.state.ball2;
-
-        //wall collisions
-        if (left2 + ballR2 > W || ballR2 + left2 < line + lineW) {
-          ballSpeedX2 = -ballSpeedX2;
-        }
-        if (top2 + ballR2 > H || top2 < 0) {
-          ballSpeedY2 = -ballSpeedY2;
-        }
-
-        //middle collision
-        if (left2 - ballR2 < line + lineW) {
-          ballSpeedX2 = -ballSpeedX2;
-        }
-
-        //paddle collisions
-        if (
-          this.state.p2.left - derp - paddleWidth / 2 < left2 &&
-          this.state.p2.left - derp + paddleWidth / 2 > left2 + ballR2
-        ) {
-          if (top2 >= paddleY && top2 + ballR2 <= paddleY + paddleHeight) {
-            ballSpeedY2 = -ballSpeedY2;
-            var delta2 = left - (this.state.you.left - derp + paddleHeight / 2);
-            ballSpeedX = delta2 * 0.25;
-          }
-        }
-
-        //block collsions
-
-        for (var x = 0; x < blocks2.length; x++) {
-          var currentBlock2;
-          if (
-            left2 + ballR2 >= blocks2[i].left &&
-            left2 + ballR2 <= blocks2[i].left + 2
-          ) {
-            if (
-              top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-              top2 + ballR2 >= blocks2[i].top
-            ) {
-              ballSpeedX2 = -ballSpeedX2;
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            } else if (
-              top2 <= blocks2[i].top + blocks2[i].height &&
-              top2 >= blocks2[i].top
-            ) {
-              ballSpeedX2 = -ballSpeedX2;
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            }
-          } else if (
-            left2 + ballR2 >= blocks2[i].left + blocks2[i].width &&
-            left2 + ballR2 <= blocks2[i].left + blocks2[i].width + 2
-          ) {
-            if (
-              top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-              top2 + ballR2 >= blocks2[i].top
-            ) {
-              ballSpeedX2 = -ballSpeedX2;
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            } else if (
-              top2 <= blocks2[i].top + blocks2[i].height &&
-              top2 >= blocks2[i].top
-            ) {
-              ballSpeedX2 = -ballSpeedX2;
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            }
-          } else if (
-            left2 >= blocks2[i].left + blocks2[i].width &&
-            left2 <= blocks2[i].left + blocks2[i].width + 2
-          ) {
-            if (
-              top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-              top2 + ballR2 >= blocks2[i].top
-            ) {
-              ballSpeedX2 = -ballSpeedX2;
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            } else if (
-              top2 <= blocks2[i].top + blocks2[i].height &&
-              top2 >= blocks2[i].top
-            ) {
-              ballSpeedX2 = -ballSpeedX2;
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            }
-          } else if (left2 >= blocks2[i].left && left2 <= blocks2[i].left + 2) {
-            if (
-              top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-              top2 + ballR2 >= blocks2[i].top
-            ) {
-              ballSpeedX2 = -ballSpeedX2;
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            } else if (
-              top2 <= blocks2[i].top + blocks2[i].height &&
-              top2 >= blocks2[i].top
-            ) {
-              ballSpeedX2 = -ballSpeedX2;
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            }
-          } else if (
-            left2 + ballR2 <= blocks2[i].left + blocks2[i].width &&
-            left2 + ballR2 >= blocks2[i].left
-          ) {
-            if (
-              top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-              top2 + ballR2 >= blocks2[i].top
-            ) {
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            } else if (
-              top2 <= blocks2[i].top + blocks2[i].height &&
-              top2 >= blocks2[i].top
-            ) {
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            }
-          } else if (
-            left2 <= blocks2[i].left + blocks2[i].width &&
-            left2 >= blocks2[i]
-          ) {
-            if (
-              top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-              top2 + ballR2 >= blocks2[i].top
-            ) {
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock2);
-            } else if (
-              top2 <= blocks2[i].top + blocks2[i].height &&
-              top2 >= blocks2[i].top
-            ) {
-              ballSpeedY2 = -ballSpeedY2;
-              currentBlock2.durabilityNum -= 1;
-              this.checkBlock(currentBlock);
-            }
-          }
-        }
-        this.getSessionDatabaseRef().update({
-          ball2: {
-            left2: left2 + ballSpeedX2,
-            top2: top2 + ballSpeedY2,
-            ballR2: ballR2,
-            ballSpeedX2: ballSpeedX2,
-            ballSpeedY2: ballSpeedY2
-          }
-        });
+      //wall collisions
+      if (left + ballR / 2 > W || ballR + left < 0) {
+        ballSpeedX = -ballSpeedX;
       }
-    } else if (this.isCreator) {
+      if (top + ballR / 2 > H || top < 0) {
+        ballSpeedY = -ballSpeedY;
+      }
+
+      //middle collision
+      if (left + ballR > line) {
+        ballSpeedX = -ballSpeedX;
+      }
+
+      //paddle collisions
+      if (
+        this.state.you.left - derp - paddleWidth / 2 < left + ballR &&
+        this.state.you.left - derp + paddleWidth / 2 > left + ballR
+      ) {
+        if (top + ballR >= paddleY && top <= paddleY + paddleHeight) {
+          ballSpeedY = -ballSpeedY;
+          // var delta = left - (this.state.you.left - derp + paddleHeight / 2);
+          // ballSpeedX = delta * 0.15;
+        }
+      }
+
+      //block collsions
+
+      for (var i = 0; i < blocks.length; i++) {
+        var currentBlock = blocks[i];
+        if (
+          left + ballR >= blocks[i].left &&
+          left + ballR <= blocks[i].left + 2
+        ) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          }
+        } else if (
+          left + ballR >= blocks[i].left + blocks[i].width &&
+          left + ballR <= blocks[i].left + blocks[i].width + 2
+        ) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          }
+        } else if (
+          left >= blocks[i].left + blocks[i].width &&
+          left <= blocks[i].left + blocks[i].width + 2
+        ) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          }
+        } else if (left >= blocks[i].left && left <= blocks[i].left + 2) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedX = -ballSpeedX;
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          }
+        } else if (
+          left + ballR <= blocks[i].left + blocks[i].width &&
+          left + ballR >= blocks[i].left
+        ) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          }
+        } else if (
+          left <= blocks[i].left + blocks[i].width &&
+          left >= blocks[i]
+        ) {
+          if (
+            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR >= blocks[i].top
+          ) {
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          } else if (
+            top <= blocks[i].top + blocks[i].height &&
+            top >= blocks[i].top
+          ) {
+            ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          }
+        }
+      }
+
       this.getSessionDatabaseRef().update({
-        P1: {
-          name: this.users[0] + "has won and ",
-          x_cord: this.state.you.left,
-          score: numGone, //change to the state score later
-          blocks: [
-            block1.save(),
-            block2.save(),
-            block3.save(),
-            block4.save(),
-            block5.save(),
-            block6.save(),
-            block7.save(),
-            block8.save(),
-            block9.save(),
-            block10.save(),
-            block11.save(),
-            block12.save(),
-            block13.save(),
-            block14.save(),
-            block15.save(),
-            block16.save(),
-            block17.save(),
-            block18.save()
-          ]
+        ball: {
+          left: left + ballSpeedX,
+          top: top + ballSpeedY,
+          ballR: ballR,
+          ballSpeedX: ballSpeedX,
+          ballSpeedY: ballSpeedY
+        }
+      });
+    } else {
+      //ball 2 collisions
+
+      var { left2, top2, ballR2, ballSpeedX2, ballSpeedY2 } = this.state.ball2;
+
+      //wall collisions
+      if (left2 + ballR2 > W || ballR2 + left2 < line + lineW) {
+        ballSpeedX2 = -ballSpeedX2;
+      }
+      if (top2 + ballR2 > H || top2 < 0) {
+        ballSpeedY2 = -ballSpeedY2;
+      }
+
+      //middle collision
+      if (left2 - ballR2 < line + lineW) {
+        ballSpeedX2 = -ballSpeedX2;
+      }
+
+      //paddle collisions
+      if (
+        this.state.p2.left - derp - paddleWidth / 2 < left2 &&
+        this.state.p2.left - derp + paddleWidth / 2 > left2 + ballR2
+      ) {
+        if (top2 >= paddleY && top2 + ballR2 <= paddleY + paddleHeight) {
+          ballSpeedY2 = -ballSpeedY2;
+          var delta2 = left - (this.state.you.left - derp + paddleHeight / 2);
+          ballSpeedX = delta2 * 0.25;
+        }
+      }
+
+      //block collsions
+
+      for (var x = 0; x < blocks2.length; x++) {
+        var currentBlock2;
+        if (
+          left2 + ballR2 >= blocks2[i].left &&
+          left2 + ballR2 <= blocks2[i].left + 2
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 + ballR2 >= blocks2[i].left + blocks2[i].width &&
+          left2 + ballR2 <= blocks2[i].left + blocks2[i].width + 2
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 >= blocks2[i].left + blocks2[i].width &&
+          left2 <= blocks2[i].left + blocks2[i].width + 2
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          }
+        } else if (left2 >= blocks2[i].left && left2 <= blocks2[i].left + 2) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 + ballR2 <= blocks2[i].left + blocks2[i].width &&
+          left2 + ballR2 >= blocks2[i].left
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 <= blocks2[i].left + blocks2[i].width &&
+          left2 >= blocks2[i]
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
+            top2 + ballR2 >= blocks2[i].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[i].top + blocks2[i].height &&
+            top2 >= blocks2[i].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          }
+        }
+      }
+      this.getSessionDatabaseRef().update({
+        ball2: {
+          left2: left2 + ballSpeedX2,
+          top2: top2 + ballSpeedY2,
+          ballR2: ballR2,
+          ballSpeedX2: ballSpeedX2,
+          ballSpeedY2: ballSpeedY2
         }
       });
     }
@@ -671,7 +703,6 @@ export default class burst_Forth extends GameComponent {
         P1: {
           name: this.users[0],
           x_cord: this.state.you.left,
-          score: numGone, //change to the state score later
           blocks: [
             block1.save(),
             block2.save(),
@@ -691,7 +722,8 @@ export default class burst_Forth extends GameComponent {
             block16.save(),
             block17.save(),
             block18.save()
-          ]
+          ],
+          score: numGone //change to the state score later
         }
       });
 
@@ -725,6 +757,7 @@ export default class burst_Forth extends GameComponent {
         }
       });
     }
+    // fix this god damn funstion, i don't know why it doesn't work this.checkWin();
   }
 
   onMouseMove(e) {
@@ -821,7 +854,7 @@ export default class burst_Forth extends GameComponent {
         left: data.P2.x_cord,
         blocks: data.P2.blocks
       },
-      win: data.win
+      win: data.P1.win
     });
   }
 
