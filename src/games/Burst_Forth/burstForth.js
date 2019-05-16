@@ -272,46 +272,28 @@ export default class burst_Forth extends GameComponent {
   }
 
   checkWin() {
+    console.log(this.isCreator);
     if (this.isCreator) {
       numGone = 0;
       for (var q = 0; q < blocks.length; q++) {
+        //console.log(blocks[q].durabilityNum);
         if (blocks[q].durabilityNum === 0) {
           numGone += 1;
           console.log(numGone, blocks.length, blocks[q].durabilityNum);
         } else if (numGone === blocks.length) {
           console.log("win");
-          this.getSessionDatabaseRef().update({
-            P1: {
-              name: this.users[0],
-              x_cord: this.state.you.left,
-              score: numGone, //change to the state score later
-              blocks: [
-                block1.save(),
-                block2.save(),
-                block3.save(),
-                block4.save(),
-                block5.save(),
-                block6.save(),
-                block7.save(),
-                block8.save(),
-                block9.save(),
-                block10.save(),
-                block11.save(),
-                block12.save(),
-                block13.save(),
-                block14.save(),
-                block15.save(),
-                block16.save(),
-                block17.save(),
-                block18.save()
-              ],
-              win: true
-            }
-          });
-          return true;
+          // this.getSessionDatabaseRef().update({
+          //   P1: {
+          //     name: this.users[0],
+          //     x_cord: this.state.you.left,
+          //     score: numGone, //change to the state score later
+          //     blocks: this.state.you.blocks,
+          //     win: true
+          //   }
+          // });
         } else {
           numGone = 0;
-          return false;
+          console.log("not all blocks are gone");
         }
       }
     } else {
@@ -327,26 +309,7 @@ export default class burst_Forth extends GameComponent {
               name: this.users[1],
               x_cord: this.state.p2.left,
               score: numGone, //change to the state score later
-              blocks: [
-                eBlock1.save(),
-                eBlock2.save(),
-                eBlock3.save(),
-                eBlock4.save(),
-                eBlock5.save(),
-                eBlock6.save(),
-                eBlock7.save(),
-                eBlock8.save(),
-                eBlock9.save(),
-                eBlock10.save(),
-                eBlock11.save(),
-                eBlock12.save(),
-                eBlock13.save(),
-                eBlock14.save(),
-                eBlock15.save(),
-                eBlock16.save(),
-                eBlock17.save(),
-                eBlock18.save()
-              ],
+              blocks: this.state.p2.blocks,
               win: true
             }
           });
@@ -401,7 +364,6 @@ export default class burst_Forth extends GameComponent {
             top + ballR >= blocks[i].top
           ) {
             ballSpeedX = -ballSpeedX;
-            ballSpeedY = -ballSpeedY;
             currentBlock.durabilityNum -= 1;
             this.checkBlock(currentBlock);
           } else if (
@@ -409,20 +371,18 @@ export default class burst_Forth extends GameComponent {
             top >= blocks[i].top
           ) {
             ballSpeedX = -ballSpeedX;
-            ballSpeedY = -ballSpeedY;
             currentBlock.durabilityNum -= 1;
             this.checkBlock(currentBlock);
           }
         } else if (
-          left + ballR >= blocks[i].left + blocks[i].width &&
-          left + ballR <= blocks[i].left + blocks[i].width + 2
+          left >= blocks[i].left + blocks[i].width - 2 &&
+          left <= blocks[i].left + blocks[i].width
         ) {
           if (
             top + ballR <= blocks[i].top + blocks[i].height &&
             top + ballR >= blocks[i].top
           ) {
             ballSpeedX = -ballSpeedX;
-            ballSpeedY = -ballSpeedY;
             currentBlock.durabilityNum -= 1;
             this.checkBlock(currentBlock);
           } else if (
@@ -430,46 +390,6 @@ export default class burst_Forth extends GameComponent {
             top >= blocks[i].top
           ) {
             ballSpeedX = -ballSpeedX;
-            ballSpeedY = -ballSpeedY;
-            currentBlock.durabilityNum -= 1;
-            this.checkBlock(currentBlock);
-          }
-        } else if (
-          left >= blocks[i].left + blocks[i].width &&
-          left <= blocks[i].left + blocks[i].width + 2
-        ) {
-          if (
-            top + ballR <= blocks[i].top + blocks[i].height &&
-            top + ballR >= blocks[i].top
-          ) {
-            ballSpeedX = -ballSpeedX;
-            ballSpeedY = -ballSpeedY;
-            currentBlock.durabilityNum -= 1;
-            this.checkBlock(currentBlock);
-          } else if (
-            top <= blocks[i].top + blocks[i].height &&
-            top >= blocks[i].top
-          ) {
-            ballSpeedX = -ballSpeedX;
-            ballSpeedY = -ballSpeedY;
-            currentBlock.durabilityNum -= 1;
-            this.checkBlock(currentBlock);
-          }
-        } else if (left >= blocks[i].left && left <= blocks[i].left + 2) {
-          if (
-            top + ballR <= blocks[i].top + blocks[i].height &&
-            top + ballR >= blocks[i].top
-          ) {
-            ballSpeedX = -ballSpeedX;
-            ballSpeedY = -ballSpeedY;
-            currentBlock.durabilityNum -= 1;
-            this.checkBlock(currentBlock);
-          } else if (
-            top <= blocks[i].top + blocks[i].height &&
-            top >= blocks[i].top
-          ) {
-            ballSpeedX = -ballSpeedX;
-            ballSpeedY = -ballSpeedY;
             currentBlock.durabilityNum -= 1;
             this.checkBlock(currentBlock);
           }
@@ -478,7 +398,7 @@ export default class burst_Forth extends GameComponent {
           left + ballR >= blocks[i].left
         ) {
           if (
-            top + ballR <= blocks[i].top + blocks[i].height &&
+            top + ballR <= blocks[i].top + 2 &&
             top + ballR >= blocks[i].top
           ) {
             ballSpeedY = -ballSpeedY;
@@ -486,26 +406,7 @@ export default class burst_Forth extends GameComponent {
             this.checkBlock(currentBlock);
           } else if (
             top <= blocks[i].top + blocks[i].height &&
-            top >= blocks[i].top
-          ) {
-            ballSpeedY = -ballSpeedY;
-            currentBlock.durabilityNum -= 1;
-            this.checkBlock(currentBlock);
-          }
-        } else if (
-          left <= blocks[i].left + blocks[i].width &&
-          left >= blocks[i]
-        ) {
-          if (
-            top + ballR <= blocks[i].top + blocks[i].height &&
-            top + ballR >= blocks[i].top
-          ) {
-            ballSpeedY = -ballSpeedY;
-            currentBlock.durabilityNum -= 1;
-            this.checkBlock(currentBlock);
-          } else if (
-            top <= blocks[i].top + blocks[i].height &&
-            top >= blocks[i].top
+            top >= blocks[i].top + blocks[i].height - 2
           ) {
             ballSpeedY = -ballSpeedY;
             currentBlock.durabilityNum -= 1;
@@ -703,6 +604,7 @@ export default class burst_Forth extends GameComponent {
         P1: {
           name: this.users[0],
           x_cord: this.state.you.left,
+          score: numGone, //change to the state score later
           blocks: [
             block1.save(),
             block2.save(),
@@ -722,8 +624,7 @@ export default class burst_Forth extends GameComponent {
             block16.save(),
             block17.save(),
             block18.save()
-          ],
-          score: numGone //change to the state score later
+          ]
         }
       });
 
@@ -757,7 +658,8 @@ export default class burst_Forth extends GameComponent {
         }
       });
     }
-    // fix this god damn funstion, i don't know why it doesn't work this.checkWin();
+    // fix this god damn funstion, i don't know why it doesn't work
+    this.checkWin();
   }
 
   onMouseMove(e) {
