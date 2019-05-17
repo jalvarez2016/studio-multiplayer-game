@@ -18,6 +18,7 @@ var line = W / 2 - 5;
 var lineW = 10;
 
 var numGone = 0;
+var goneBlocks = [];
 
 var durability = {
   0: "black",
@@ -279,6 +280,7 @@ export default class burst_Forth extends GameComponent {
         //console.log(blocks[q].durabilityNum);
         if (blocks[q].durabilityNum === 0) {
           numGone += 1;
+          goneBlocks.push(blocks[q]);
           console.log(numGone, blocks.length, blocks[q].durabilityNum);
         } else if (numGone === blocks.length) {
           console.log("win");
@@ -291,35 +293,39 @@ export default class burst_Forth extends GameComponent {
           //     win: true
           //   }
           // });
-        } else {
+        } else if (q === blocks.length) {
           numGone = 0;
+          goneBlocks = [];
+          console.log("numGone return to zero");
+        } else {
           console.log("not all blocks are gone");
         }
       }
-    } else {
-      numGone = 0;
-      for (var x = 0; x < blocks2.length; x++) {
-        if (blocks2[x].durabilityNum === 0) {
-          numGone += 1;
-          console.log(numGone, blocks2.length, blocks2[q].durabilityNum);
-        } else if (numGone === blocks.length) {
-          console.log("win");
-          this.getSessionDatabaseRef().update({
-            P2: {
-              name: this.users[1],
-              x_cord: this.state.p2.left,
-              score: numGone, //change to the state score later
-              blocks: this.state.p2.blocks,
-              win: true
-            }
-          });
-          return true;
-        } else {
-          numGone = 0;
-          return false;
-        }
-      }
     }
+    //  else {
+    //   numGone = 0;
+    //   for (var x = 0; x < blocks2.length; x++) {
+    //     if (blocks2[x].durabilityNum === 0) {
+    //       numGone += 1;
+    //       console.log(numGone, blocks2.length, blocks2[q].durabilityNum);
+    //     } else if (numGone === blocks.length) {
+    //       console.log("win");
+    //       this.getSessionDatabaseRef().update({
+    //         P2: {
+    //           name: this.users[1],
+    //           x_cord: this.state.p2.left,
+    //           score: numGone, //change to the state score later
+    //           blocks: this.state.p2.blocks,
+    //           win: true
+    //         }
+    //       });
+    //       return true;
+    //     } else {
+    //       numGone = 0;
+    //       return false;
+    //     }
+    //   }
+    // }
   }
 
   ballMove() {
@@ -342,7 +348,7 @@ export default class burst_Forth extends GameComponent {
       //paddle collisions
       if (
         this.state.you.left - derp - paddleWidth / 2 < left + ballR &&
-        this.state.you.left - derp + paddleWidth / 2 > left + ballR
+        this.state.you.left - derp + paddleWidth / 2 > left
       ) {
         if (top + ballR >= paddleY && top <= paddleY + paddleHeight) {
           ballSpeedY = -ballSpeedY;
@@ -409,6 +415,22 @@ export default class burst_Forth extends GameComponent {
             top >= blocks[i].top + blocks[i].height - 2
           ) {
             ballSpeedY = -ballSpeedY;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          }
+        } else if (
+          left <= blocks[i].left + blocks[i].height &&
+          left >= blocks[i].width + blocks[i].left - 2
+        ) {
+          if (top >= blocks[i].top && top <= blocks[i].top + blocks[i].height) {
+            ballSpeedX = -ballSpeedX;
+            currentBlock.durabilityNum -= 1;
+            this.checkBlock(currentBlock);
+          } else if (
+            top + ballR >= blocks[i].top &&
+            top + ballR <= blocks[i].top + blocks[i].height
+          ) {
+            ballSpeedX = -ballSpeedX;
             currentBlock.durabilityNum -= 1;
             this.checkBlock(currentBlock);
           }
