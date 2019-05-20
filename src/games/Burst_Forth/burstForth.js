@@ -476,7 +476,7 @@ export default class burst_Forth extends GameComponent {
           ballSpeedX = delta2 * 0.25;
         }
       }
-
+      //
       //block collsions
 
       for (var x = 0; x < blocks2.length; x++) {
