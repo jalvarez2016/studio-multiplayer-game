@@ -282,53 +282,50 @@ export default class burst_Forth extends GameComponent {
           numGone += 1;
           goneBlocks.push(blocks[q]);
           console.log(numGone, blocks.length, blocks[q].durabilityNum);
-        } else if (numGone === blocks.length) {
-          console.log("win");
-          // this.getSessionDatabaseRef().update({
-          //   P1: {
-          //     name: this.users[0],
-          //     x_cord: this.state.you.left,
-          //     score: numGone, //change to the state score later
-          //     blocks: this.state.you.blocks,
-          //     win: true
-          //   }
-          // });
-        } else if (q === blocks.length) {
-          numGone = 0;
-          goneBlocks = [];
-          console.log("numGone return to zero");
+          if (numGone === blocks.length) {
+            console.log("win");
+            this.getSessionDatabaseRef().update({
+              P1: {
+                name: this.users[0],
+                x_cord: this.state.you.left,
+                score: numGone, //change to the state score later
+                blocks: this.state.you.blocks,
+                win: true
+              }
+            });
+          }
+        } else {
+          console.log("not all blocks are gone");
+        }
+      }
+    } else {
+      numGone = 0;
+      for (var y = 0; y < blocks2.length; y++) {
+        if (blocks2[y].durabilityNum === 0) {
+          numGone += 1;
+          console.log(numGone, blocks2.length, blocks2[y].durabilityNum);
+          if (numGone === blocks2.length) {
+            console.log("win");
+            this.getSessionDatabaseRef().update({
+              P2: {
+                name: this.users[1],
+                x_cord: this.state.p2.left,
+                score: numGone, //change to the state score later
+                blocks: this.state.p2.blocks,
+                win: true
+              }
+            });
+          }
         } else {
           console.log("not all blocks are gone");
         }
       }
     }
-    //  else {
-    //   numGone = 0;
-    //   for (var x = 0; x < blocks2.length; x++) {
-    //     if (blocks2[x].durabilityNum === 0) {
-    //       numGone += 1;
-    //       console.log(numGone, blocks2.length, blocks2[q].durabilityNum);
-    //     } else if (numGone === blocks.length) {
-    //       console.log("win");
-    //       this.getSessionDatabaseRef().update({
-    //         P2: {
-    //           name: this.users[1],
-    //           x_cord: this.state.p2.left,
-    //           score: numGone, //change to the state score later
-    //           blocks: this.state.p2.blocks,
-    //           win: true
-    //         }
-    //       });
-    //       return true;
-    //     } else {
-    //       numGone = 0;
-    //       return false;
-    //     }
-    //   }
-    // }
   }
 
   ballMove() {
+    // fix this god damn funstion, i don't know why it doesn't work
+    this.checkWin();
     if (this.isCreator) {
       var { left, top, ballR, ballSpeedX, ballSpeedY } = this.state.ball;
 
@@ -457,6 +454,9 @@ export default class burst_Forth extends GameComponent {
       }
       if (top2 + ballR2 > H || top2 < 0) {
         ballSpeedY2 = -ballSpeedY2;
+        if (top2 >= H) {
+          //punishment for hitting the bottom
+        }
       }
 
       //middle collision
@@ -469,9 +469,10 @@ export default class burst_Forth extends GameComponent {
         this.state.p2.left - derp - paddleWidth / 2 < left2 &&
         this.state.p2.left - derp + paddleWidth / 2 > left2 + ballR2
       ) {
-        if (top2 >= paddleY && top2 + ballR2 <= paddleY + paddleHeight) {
+        console.log("hit");
+        if (top2 + ballR2 >= paddleY && top2 <= paddleY + paddleHeight) {
           ballSpeedY2 = -ballSpeedY2;
-          var delta2 = left - (this.state.you.left - derp + paddleHeight / 2);
+          var delta2 = left - (this.state.p2.left - derp + paddleHeight / 2);
           ballSpeedX = delta2 * 0.25;
         }
       }
@@ -479,22 +480,22 @@ export default class burst_Forth extends GameComponent {
       //block collsions
 
       for (var x = 0; x < blocks2.length; x++) {
-        var currentBlock2;
+        var currentBlock2 = blocks2[x];
         if (
-          left2 + ballR2 >= blocks2[i].left &&
-          left2 + ballR2 <= blocks2[i].left + 2
+          left2 + ballR2 >= blocks2[x].left &&
+          left2 + ballR2 <= blocks2[x].left + 2
         ) {
           if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
@@ -502,20 +503,20 @@ export default class burst_Forth extends GameComponent {
             this.checkBlock(currentBlock2);
           }
         } else if (
-          left2 + ballR2 >= blocks2[i].left + blocks2[i].width &&
-          left2 + ballR2 <= blocks2[i].left + blocks2[i].width + 2
+          left2 + ballR2 >= blocks2[x].left + blocks2[x].width &&
+          left2 + ballR2 <= blocks2[x].left + blocks2[x].width + 2
         ) {
           if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
@@ -523,77 +524,77 @@ export default class burst_Forth extends GameComponent {
             this.checkBlock(currentBlock2);
           }
         } else if (
-          left2 >= blocks2[i].left + blocks2[i].width &&
-          left2 <= blocks2[i].left + blocks2[i].width + 2
+          left2 >= blocks2[x].left + blocks2[x].width &&
+          left2 <= blocks2[x].left + blocks2[x].width + 2
         ) {
           if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           }
-        } else if (left2 >= blocks2[i].left && left2 <= blocks2[i].left + 2) {
+        } else if (left2 >= blocks2[x].left && left2 <= blocks2[x].left + 2) {
           if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          }
-        } else if (
-          left2 + ballR2 <= blocks2[i].left + blocks2[i].width &&
-          left2 + ballR2 >= blocks2[i].left
-        ) {
-          if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
-          ) {
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
-          ) {
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           }
         } else if (
-          left2 <= blocks2[i].left + blocks2[i].width &&
-          left2 >= blocks2[i]
+          left2 + ballR2 <= blocks2[x].left + blocks2[x].width &&
+          left2 + ballR2 >= blocks2[x].left
         ) {
           if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 <= blocks2[x].left + blocks2[x].width &&
+          left2 >= blocks2[x]
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
+          ) {
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
@@ -619,6 +620,8 @@ export default class burst_Forth extends GameComponent {
     if (currentBlock.durabilityNum <= 0) {
       currentBlock.height = 0;
       currentBlock.width = 0;
+      currentBlock.left = 0;
+      currentBlock.top = 0;
     }
 
     if (this.isCreator) {
@@ -656,7 +659,7 @@ export default class burst_Forth extends GameComponent {
         P2: {
           name: this.users[1],
           x_cord: this.state.p2.left,
-          score: this.state.p2.score + 1, //change to the state score later
+          score: numGone, //change to the state score later
           blocks: [
             eBlock1.save(),
             eBlock2.save(),
@@ -680,8 +683,6 @@ export default class burst_Forth extends GameComponent {
         }
       });
     }
-    // fix this god damn funstion, i don't know why it doesn't work
-    this.checkWin();
   }
 
   onMouseMove(e) {
