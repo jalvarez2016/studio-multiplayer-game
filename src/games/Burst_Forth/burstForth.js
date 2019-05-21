@@ -273,18 +273,14 @@ export default class burst_Forth extends GameComponent {
   }
 
   checkWin() {
-    console.log(this.isCreator);
     if (this.isCreator) {
       numGone = 0;
       goneBlocks = [];
       for (var q = 0; q < blocks.length; q++) {
-        //console.log(blocks[q].durabilityNum);
         if (blocks[q].durabilityNum === 0) {
           numGone += 1;
           goneBlocks.push(blocks[q]);
-          console.log(numGone, blocks.length, blocks[q].durabilityNum);
           if (numGone === blocks.length) {
-            console.log("win");
             this.getSessionDatabaseRef().update({
               P1: {
                 name: this.users[0],
@@ -296,7 +292,6 @@ export default class burst_Forth extends GameComponent {
             });
           }
         } else {
-          console.log("not all blocks are gone");
         }
       }
     } else {
@@ -304,9 +299,7 @@ export default class burst_Forth extends GameComponent {
       for (var y = 0; y < blocks2.length; y++) {
         if (blocks2[y].durabilityNum === 0) {
           numGone += 1;
-          console.log(numGone, blocks2.length, blocks2[y].durabilityNum);
           if (numGone === blocks2.length) {
-            console.log("win");
             this.getSessionDatabaseRef().update({
               P2: {
                 name: this.users[1],
@@ -318,7 +311,6 @@ export default class burst_Forth extends GameComponent {
             });
           }
         } else {
-          console.log("not all blocks are gone");
         }
       }
     }
@@ -497,7 +489,6 @@ export default class burst_Forth extends GameComponent {
         this.state.p2.left - derp - paddleWidth / 2 < left2 &&
         this.state.p2.left - derp + paddleWidth / 2 > left2 + ballR2
       ) {
-        console.log("hit");
         if (top2 + ballR2 >= paddleY && top2 <= paddleY + paddleHeight) {
           ballSpeedY2 = -ballSpeedY2;
           var delta2 = left - (this.state.p2.left - derp + paddleHeight / 2);
@@ -781,8 +772,6 @@ export default class burst_Forth extends GameComponent {
   }
 
   onSessionDataChanged(data) {
-    //console.log(data);
-
     var winner = null;
     if (data.P1.win === true) {
       winner = "p1";
@@ -829,12 +818,17 @@ export default class burst_Forth extends GameComponent {
     // var creator = this.getSessionCreatorUserId();
 
     if (this.state.win) {
-      return <div><div>{this.state.win} is the winner</div> <img src="http://clipart-library.com/images/8cAEdyAXi.png"/></div>;
+      return (
+        <div>
+          <div>{this.state.win} is the winner</div>{" "}
+          <img src="http://clipart-library.com/images/8cAEdyAXi.png" />
+        </div>
+      );
     } else {
       return (
         <div>
           <audio controls loop>
-          <source src="mainTheme.mp3" type="audio/mpeg"></source>
+            <source src="mainTheme.mp3" type="audio/mpeg" />
           </audio>
           <div
             style={{
