@@ -3,7 +3,7 @@ import React from "react";
 import UserApi from "../../UserApi.js";
 import firebase from "firebase";
 //
-
+//
 const W = document.body.clientWidth - 200;
 const H = 700;
 const fps = 100;
@@ -220,7 +220,7 @@ export default class burst_Forth extends GameComponent {
       P1: {
         name: this.users[0],
         x_cord: this.state.you.left,
-        score: this.state.you.score, //change to the state score later
+        score: this.state.you.score,
         blocks: [
           block1.save(),
           block2.save(),
@@ -282,6 +282,46 @@ export default class burst_Forth extends GameComponent {
         if (blocks[q].durabilityNum === 0) {
           numGone += 1;
           goneBlocks.push(blocks[q]);
+          console.log(numGone, blocks.length, blocks[q].durabilityNum);
+          if (numGone === blocks.length) {
+            console.log("win");
+            this.getSessionDatabaseRef().update({
+              P1: {
+                name: this.users[0],
+                x_cord: this.state.you.left,
+                score: numGone, //change to the state score later
+                blocks: this.state.you.blocks,
+                win: true
+              }
+            });
+          }
+        } else {
+          console.log("not all blocks are gone");
+        }
+      }
+    } else {
+      numGone = 0;
+      for (var y = 0; y < blocks2.length; y++) {
+        if (blocks2[y].durabilityNum === 0) {
+          numGone += 1;
+          console.log(numGone, blocks2.length, blocks2[y].durabilityNum);
+          if (numGone === blocks2.length) {
+            console.log("win");
+            this.getSessionDatabaseRef().update({
+              P2: {
+                name: this.users[1],
+                x_cord: this.state.p2.left,
+                score: numGone, //change to the state score later
+                blocks: this.state.p2.blocks,
+                win: true
+              }
+            });
+          }
+        } else {
+          console.log("not all blocks are gone");
+        }
+      }
+    }
           this.getSessionDatabaseRef().update({
             P1: {
               name: this.users[0],
@@ -305,33 +345,11 @@ export default class burst_Forth extends GameComponent {
         }
       }
     }
-    //  else {
-    //   numGone = 0;
-    //   for (var x = 0; x < blocks2.length; x++) {
-    //     if (blocks2[x].durabilityNum === 0) {
-    //       numGone += 1;
-    //       console.log(numGone, blocks2.length, blocks2[q].durabilityNum);
-    //     } else if (numGone === blocks.length) {
-    //       console.log("win");
-    //       this.getSessionDatabaseRef().update({
-    //         P2: {
-    //           name: this.users[1],
-    //           x_cord: this.state.p2.left,
-    //           score: numGone, //change to the state score later
-    //           blocks: this.state.p2.blocks,
-    //           win: true
-    //         }
-    //       });
-    //       return true;
-    //     } else {
-    //       numGone = 0;
-    //       return false;
-    //     }
-    //   }
-    // }
   }
 
   ballMove() {
+    // fix this god damn funstion, i don't know why it doesn't work
+    this.checkWin();
     if (this.isCreator) {
       var { left, top, ballR, ballSpeedX, ballSpeedY } = this.state.ball;
 
@@ -464,6 +482,9 @@ export default class burst_Forth extends GameComponent {
       }
       if (top2 + ballR2 > H || top2 < 0) {
         ballSpeedY2 = -ballSpeedY2;
+        if (top2 >= H) {
+          //punishment for hitting the bottom
+        }
       }
 
       //middle collision
@@ -476,32 +497,52 @@ export default class burst_Forth extends GameComponent {
         this.state.p2.left - derp - paddleWidth / 2 < left2 &&
         this.state.p2.left - derp + paddleWidth / 2 > left2 + ballR2
       ) {
-        if (top2 >= paddleY && top2 + ballR2 <= paddleY + paddleHeight) {
+        console.log("hit");
+        if (top2 + ballR2 >= paddleY && top2 <= paddleY + paddleHeight) {
           ballSpeedY2 = -ballSpeedY2;
-          var delta2 = left - (this.state.you.left - derp + paddleHeight / 2);
+          var delta2 = left - (this.state.p2.left - derp + paddleHeight / 2);
           ballSpeedX = delta2 * 0.25;
         }
       }
-
+      //
       //block collsions
 
       for (var x = 0; x < blocks2.length; x++) {
-        var currentBlock2;
+        var currentBlock2 = blocks2[x];
         if (
-          left2 + ballR2 >= blocks2[i].left &&
-          left2 + ballR2 <= blocks2[i].left + 2
+          left2 + ballR2 >= blocks2[x].left &&
+          left2 + ballR2 <= blocks2[x].left + 2
         ) {
           if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          }
+        } else if (
+          left2 >= blocks2[x].left + blocks2[x].width - 2 &&
+          left2 <= blocks2[x].left + blocks2[x].width
+        ) {
+          if (
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
@@ -509,20 +550,38 @@ export default class burst_Forth extends GameComponent {
             this.checkBlock(currentBlock2);
           }
         } else if (
-          left2 + ballR2 >= blocks2[i].left + blocks2[i].width &&
-          left2 + ballR2 <= blocks2[i].left + blocks2[i].width + 2
+          left2 >= blocks2[x].left + blocks2[x].width &&
+          left2 <= blocks2[x].left + blocks2[x].width + 2
         ) {
           if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          }
+        } else if (left2 >= blocks2[x].left && left2 <= blocks2[x].left + 2) {
+          if (
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
+          ) {
+            ballSpeedX2 = -ballSpeedX2;
+            ballSpeedY2 = -ballSpeedY2;
+            currentBlock2.durabilityNum -= 1;
+            this.checkBlock(currentBlock2);
+          } else if (
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
             ballSpeedY2 = -ballSpeedY2;
@@ -530,77 +589,38 @@ export default class burst_Forth extends GameComponent {
             this.checkBlock(currentBlock2);
           }
         } else if (
-          left2 >= blocks2[i].left + blocks2[i].width &&
-          left2 <= blocks2[i].left + blocks2[i].width + 2
+          left2 + ballR2 <= blocks2[x].left + blocks2[x].width &&
+          left2 + ballR2 >= blocks2[x].left
         ) {
           if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
-          ) {
-            ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
-          ) {
-            ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          }
-        } else if (left2 >= blocks2[i].left && left2 <= blocks2[i].left + 2) {
-          if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
-          ) {
-            ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
-          ) {
-            ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          }
-        } else if (
-          left2 + ballR2 <= blocks2[i].left + blocks2[i].width &&
-          left2 + ballR2 >= blocks2[i].left
-        ) {
-          if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           }
         } else if (
-          left2 <= blocks2[i].left + blocks2[i].width &&
-          left2 >= blocks2[i]
+          left2 <= blocks2[x].left + blocks2[x].width &&
+          left2 >= blocks2[x]
         ) {
           if (
-            top2 + ballR2 <= blocks2[i].top + blocks2[i].height &&
-            top2 + ballR2 >= blocks2[i].top
+            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
-            top2 <= blocks2[i].top + blocks2[i].height &&
-            top2 >= blocks2[i].top
+            top2 <= blocks2[x].top + blocks2[x].height &&
+            top2 >= blocks2[x].top
           ) {
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
@@ -667,7 +687,7 @@ export default class burst_Forth extends GameComponent {
         P2: {
           name: this.users[1],
           x_cord: this.state.p2.left,
-          score: this.state.p2.score + 1, //change to the state score later
+          score: numGone, //change to the state score later
           blocks: [
             eBlock1.save(),
             eBlock2.save(),
@@ -761,6 +781,14 @@ export default class burst_Forth extends GameComponent {
   }
 
   onSessionDataChanged(data) {
+    //console.log(data);
+
+    var winner = null;
+    if (data.P1.win === true) {
+      winner = "p1";
+    } else if (data.P2.win === true) {
+      winner = "p2";
+    }
     this.setState({
       ball: {
         left: data.ball.left,
@@ -787,7 +815,7 @@ export default class burst_Forth extends GameComponent {
         left: data.P2.x_cord,
         blocks: data.P2.blocks
       },
-      win: data.P1.win
+      win: winner
     });
   }
 
@@ -800,459 +828,454 @@ export default class burst_Forth extends GameComponent {
     // ));
     // var creator = this.getSessionCreatorUserId();
 
-    return (
-      <div>
-        {/* <div
-          style={{
-            position: "absolute",
-            width: "50%"
-          }}
-        >
-          <p>Session ID: {id}</p>
-          <p>Session creator: {creator}</p>
-          <p>Session users:</p>
-          <ul>{users}</ul>
-        </div> */}
-        <div
-          style={{
-            margin: "30px auto",
-            position: "relative",
-            backgroundColor: "black",
-            width: W + "px",
-            height: H + "px"
-            // cursor: "none"
-          }}
-          onMouseMove={e => this.onMouseMove(e)}
-        >
-          <div
-            className="You"
-            style={{
-              position: "absolute",
-              backgroundColor: "green",
-              width: paddleWidth + "px",
-              height: paddleHeight + "px",
-              top: paddleY + "px",
-              left: this.state.you.left - derp - paddleWidth / 2 + "px"
-            }}
-          />
-          <div
-            className="ball1"
-            style={{
-              position: "absolute",
-              backgroundColor: "white",
-              width: this.state.ball.ballR + "px",
-              height: this.state.ball.ballR + "px",
-              borderRadius: "50%",
-              top: this.state.ball.top + "px",
-              left: this.state.ball.left + "px"
-            }}
-          />
+    if (this.state.win) {
+      return <div><div>{this.state.win} is the winner</div> <img src="http://clipart-library.com/images/8cAEdyAXi.png"/></div>;
+    } else {
+      return (
+        <div>
+          <audio controls loop>
+          <source src="mainTheme.mp3" type="audio/mpeg"></source>
+          </audio>
           <div
             style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[0].color,
-              width: this.state.you.blocks[0].width + "px",
-              height: this.state.you.blocks[0].height + "px",
-              top: this.state.you.blocks[0].top + "px",
-              left: this.state.you.blocks[0].left + "px"
+              margin: "30px auto",
+              position: "relative",
+              backgroundColor: "black",
+              width: W + "px",
+              height: H + "px"
+              // cursor: "none"
             }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[1].color,
-              width: this.state.you.blocks[1].width + "px",
-              height: this.state.you.blocks[1].height + "px",
-              top: this.state.you.blocks[1].top + "px",
-              left: this.state.you.blocks[1].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[2].color,
-              width: this.state.you.blocks[2].width + "px",
-              height: this.state.you.blocks[2].height + "px",
-              top: this.state.you.blocks[2].top + "px",
-              left: this.state.you.blocks[2].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[3].color,
-              width: this.state.you.blocks[3].width + "px",
-              height: this.state.you.blocks[3].height + "px",
-              top: this.state.you.blocks[3].top + "px",
-              left: this.state.you.blocks[3].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[4].color,
-              width: this.state.you.blocks[4].width + "px",
-              height: this.state.you.blocks[4].height + "px",
-              top: this.state.you.blocks[4].top + "px",
-              left: this.state.you.blocks[4].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[5].color,
-              width: this.state.you.blocks[5].width + "px",
-              height: this.state.you.blocks[5].height + "px",
-              top: this.state.you.blocks[5].top + "px",
-              left: this.state.you.blocks[5].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[6].color,
-              width: this.state.you.blocks[6].width + "px",
-              height: this.state.you.blocks[6].height + "px",
-              top: this.state.you.blocks[6].top + "px",
-              left: this.state.you.blocks[6].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[7].color,
-              width: this.state.you.blocks[7].width + "px",
-              height: this.state.you.blocks[7].height + "px",
-              top: this.state.you.blocks[7].top + "px",
-              left: this.state.you.blocks[7].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[8].color,
-              width: this.state.you.blocks[8].width + "px",
-              height: this.state.you.blocks[8].height + "px",
-              top: this.state.you.blocks[8].top + "px",
-              left: this.state.you.blocks[8].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[9].color,
-              width: this.state.you.blocks[9].width + "px",
-              height: this.state.you.blocks[9].height + "px",
-              top: this.state.you.blocks[9].top + "px",
-              left: this.state.you.blocks[9].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[10].color,
-              width: this.state.you.blocks[10].width + "px",
-              height: this.state.you.blocks[10].height + "px",
-              top: this.state.you.blocks[10].top + "px",
-              left: this.state.you.blocks[10].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[11].color,
-              width: this.state.you.blocks[11].width + "px",
-              height: this.state.you.blocks[11].height + "px",
-              top: this.state.you.blocks[11].top + "px",
-              left: this.state.you.blocks[11].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[12].color,
-              width: this.state.you.blocks[12].width + "px",
-              height: this.state.you.blocks[12].height + "px",
-              top: this.state.you.blocks[12].top + "px",
-              left: this.state.you.blocks[12].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[13].color,
-              width: this.state.you.blocks[13].width + "px",
-              height: this.state.you.blocks[13].height + "px",
-              top: this.state.you.blocks[13].top + "px",
-              left: this.state.you.blocks[13].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[14].color,
-              width: this.state.you.blocks[14].width + "px",
-              height: this.state.you.blocks[14].height + "px",
-              top: this.state.you.blocks[14].top + "px",
-              left: this.state.you.blocks[14].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[15].color,
-              width: this.state.you.blocks[15].width + "px",
-              height: this.state.you.blocks[15].height + "px",
-              top: this.state.you.blocks[15].top + "px",
-              left: this.state.you.blocks[15].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[16].color,
-              width: this.state.you.blocks[16].width + "px",
-              height: this.state.you.blocks[16].height + "px",
-              top: this.state.you.blocks[16].top + "px",
-              left: this.state.you.blocks[16].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.you.blocks[17].color,
-              width: this.state.you.blocks[17].width + "px",
-              height: this.state.you.blocks[17].height + "px",
-              top: this.state.you.blocks[17].top + "px",
-              left: this.state.you.blocks[17].left + "px"
-            }}
-          />
+            onMouseMove={e => this.onMouseMove(e)}
+          >
+            <div
+              className="You"
+              style={{
+                position: "absolute",
+                backgroundColor: "green",
+                width: paddleWidth + "px",
+                height: paddleHeight + "px",
+                top: paddleY + "px",
+                left: this.state.you.left - derp - paddleWidth / 2 + "px"
+              }}
+            />
+            <div
+              className="ball1"
+              style={{
+                position: "absolute",
+                backgroundColor: "white",
+                width: this.state.ball.ballR + "px",
+                height: this.state.ball.ballR + "px",
+                borderRadius: "50%",
+                top: this.state.ball.top + "px",
+                left: this.state.ball.left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[0].color,
+                width: this.state.you.blocks[0].width + "px",
+                height: this.state.you.blocks[0].height + "px",
+                top: this.state.you.blocks[0].top + "px",
+                left: this.state.you.blocks[0].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[1].color,
+                width: this.state.you.blocks[1].width + "px",
+                height: this.state.you.blocks[1].height + "px",
+                top: this.state.you.blocks[1].top + "px",
+                left: this.state.you.blocks[1].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[2].color,
+                width: this.state.you.blocks[2].width + "px",
+                height: this.state.you.blocks[2].height + "px",
+                top: this.state.you.blocks[2].top + "px",
+                left: this.state.you.blocks[2].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[3].color,
+                width: this.state.you.blocks[3].width + "px",
+                height: this.state.you.blocks[3].height + "px",
+                top: this.state.you.blocks[3].top + "px",
+                left: this.state.you.blocks[3].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[4].color,
+                width: this.state.you.blocks[4].width + "px",
+                height: this.state.you.blocks[4].height + "px",
+                top: this.state.you.blocks[4].top + "px",
+                left: this.state.you.blocks[4].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[5].color,
+                width: this.state.you.blocks[5].width + "px",
+                height: this.state.you.blocks[5].height + "px",
+                top: this.state.you.blocks[5].top + "px",
+                left: this.state.you.blocks[5].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[6].color,
+                width: this.state.you.blocks[6].width + "px",
+                height: this.state.you.blocks[6].height + "px",
+                top: this.state.you.blocks[6].top + "px",
+                left: this.state.you.blocks[6].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[7].color,
+                width: this.state.you.blocks[7].width + "px",
+                height: this.state.you.blocks[7].height + "px",
+                top: this.state.you.blocks[7].top + "px",
+                left: this.state.you.blocks[7].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[8].color,
+                width: this.state.you.blocks[8].width + "px",
+                height: this.state.you.blocks[8].height + "px",
+                top: this.state.you.blocks[8].top + "px",
+                left: this.state.you.blocks[8].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[9].color,
+                width: this.state.you.blocks[9].width + "px",
+                height: this.state.you.blocks[9].height + "px",
+                top: this.state.you.blocks[9].top + "px",
+                left: this.state.you.blocks[9].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[10].color,
+                width: this.state.you.blocks[10].width + "px",
+                height: this.state.you.blocks[10].height + "px",
+                top: this.state.you.blocks[10].top + "px",
+                left: this.state.you.blocks[10].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[11].color,
+                width: this.state.you.blocks[11].width + "px",
+                height: this.state.you.blocks[11].height + "px",
+                top: this.state.you.blocks[11].top + "px",
+                left: this.state.you.blocks[11].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[12].color,
+                width: this.state.you.blocks[12].width + "px",
+                height: this.state.you.blocks[12].height + "px",
+                top: this.state.you.blocks[12].top + "px",
+                left: this.state.you.blocks[12].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[13].color,
+                width: this.state.you.blocks[13].width + "px",
+                height: this.state.you.blocks[13].height + "px",
+                top: this.state.you.blocks[13].top + "px",
+                left: this.state.you.blocks[13].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[14].color,
+                width: this.state.you.blocks[14].width + "px",
+                height: this.state.you.blocks[14].height + "px",
+                top: this.state.you.blocks[14].top + "px",
+                left: this.state.you.blocks[14].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[15].color,
+                width: this.state.you.blocks[15].width + "px",
+                height: this.state.you.blocks[15].height + "px",
+                top: this.state.you.blocks[15].top + "px",
+                left: this.state.you.blocks[15].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[16].color,
+                width: this.state.you.blocks[16].width + "px",
+                height: this.state.you.blocks[16].height + "px",
+                top: this.state.you.blocks[16].top + "px",
+                left: this.state.you.blocks[16].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.you.blocks[17].color,
+                width: this.state.you.blocks[17].width + "px",
+                height: this.state.you.blocks[17].height + "px",
+                top: this.state.you.blocks[17].top + "px",
+                left: this.state.you.blocks[17].left + "px"
+              }}
+            />
 
-          <div
-            className="line"
-            style={{
-              position: "absolute",
-              backgroundColor: "white",
-              width: lineW + "px",
-              height: "inherit",
-              left: line + "px"
-            }}
-          />
+            <div
+              className="line"
+              style={{
+                position: "absolute",
+                backgroundColor: "white",
+                width: lineW + "px",
+                height: "inherit",
+                left: line + "px"
+              }}
+            />
 
-          <div
-            className="Player2"
-            style={{
-              position: "absolute",
-              backgroundColor: "purple",
-              width: paddleWidth + "px",
-              height: paddleHeight + "px",
-              top: paddleY + "px",
-              left: this.state.p2.left - derp - paddleWidth / 2 + "px"
-            }}
-          />
-          <div
-            className="ball2"
-            style={{
-              position: "absolute",
-              backgroundColor: "white",
-              width: this.state.ball2.ballR2 + "px",
-              height: this.state.ball2.ballR2 + "px",
-              borderRadius: "50%",
-              top: this.state.ball2.top2 + "px",
-              left: this.state.ball2.left2 + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[0].color,
-              width: this.state.p2.blocks[0].width + "px",
-              height: this.state.p2.blocks[0].height + "px",
-              top: this.state.p2.blocks[0].top + "px",
-              left: this.state.p2.blocks[0].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[1].color,
-              width: this.state.p2.blocks[1].width + "px",
-              height: this.state.p2.blocks[1].height + "px",
-              top: this.state.p2.blocks[1].top + "px",
-              left: this.state.p2.blocks[1].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[2].color,
-              width: this.state.p2.blocks[2].width + "px",
-              height: this.state.p2.blocks[2].height + "px",
-              top: this.state.p2.blocks[2].top + "px",
-              left: this.state.p2.blocks[2].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[3].color,
-              width: this.state.p2.blocks[3].width + "px",
-              height: this.state.p2.blocks[3].height + "px",
-              top: this.state.p2.blocks[3].top + "px",
-              left: this.state.p2.blocks[3].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[4].color,
-              width: this.state.p2.blocks[4].width + "px",
-              height: this.state.p2.blocks[4].height + "px",
-              top: this.state.p2.blocks[4].top + "px",
-              left: this.state.p2.blocks[4].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[5].color,
-              width: this.state.p2.blocks[5].width + "px",
-              height: this.state.p2.blocks[5].height + "px",
-              top: this.state.p2.blocks[5].top + "px",
-              left: this.state.p2.blocks[5].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[6].color,
-              width: this.state.p2.blocks[6].width + "px",
-              height: this.state.p2.blocks[6].height + "px",
-              top: this.state.p2.blocks[6].top + "px",
-              left: this.state.p2.blocks[6].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[7].color,
-              width: this.state.p2.blocks[7].width + "px",
-              height: this.state.p2.blocks[7].height + "px",
-              top: this.state.p2.blocks[7].top + "px",
-              left: this.state.p2.blocks[7].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[8].color,
-              width: this.state.p2.blocks[8].width + "px",
-              height: this.state.p2.blocks[8].height + "px",
-              top: this.state.p2.blocks[8].top + "px",
-              left: this.state.p2.blocks[8].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[8].color,
-              width: this.state.p2.blocks[8].width + "px",
-              height: this.state.p2.blocks[8].height + "px",
-              top: this.state.p2.blocks[8].top + "px",
-              left: this.state.p2.blocks[8].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[9].color,
-              width: this.state.p2.blocks[9].width + "px",
-              height: this.state.p2.blocks[9].height + "px",
-              top: this.state.p2.blocks[9].top + "px",
-              left: this.state.p2.blocks[9].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[10].color,
-              width: this.state.p2.blocks[10].width + "px",
-              height: this.state.p2.blocks[10].height + "px",
-              top: this.state.p2.blocks[10].top + "px",
-              left: this.state.p2.blocks[10].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[11].color,
-              width: this.state.p2.blocks[11].width + "px",
-              height: this.state.p2.blocks[11].height + "px",
-              top: this.state.p2.blocks[11].top + "px",
-              left: this.state.p2.blocks[11].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[12].color,
-              width: this.state.p2.blocks[12].width + "px",
-              height: this.state.p2.blocks[12].height + "px",
-              top: this.state.p2.blocks[12].top + "px",
-              left: this.state.p2.blocks[12].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[13].color,
-              width: this.state.p2.blocks[13].width + "px",
-              height: this.state.p2.blocks[13].height + "px",
-              top: this.state.p2.blocks[13].top + "px",
-              left: this.state.p2.blocks[13].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[14].color,
-              width: this.state.p2.blocks[14].width + "px",
-              height: this.state.p2.blocks[14].height + "px",
-              top: this.state.p2.blocks[14].top + "px",
-              left: this.state.p2.blocks[14].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[15].color,
-              width: this.state.p2.blocks[15].width + "px",
-              height: this.state.p2.blocks[15].height + "px",
-              top: this.state.p2.blocks[15].top + "px",
-              left: this.state.p2.blocks[15].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[16].color,
-              width: this.state.p2.blocks[16].width + "px",
-              height: this.state.p2.blocks[16].height + "px",
-              top: this.state.p2.blocks[16].top + "px",
-              left: this.state.p2.blocks[16].left + "px"
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              backgroundColor: this.state.p2.blocks[17].color,
-              width: this.state.p2.blocks[17].width + "px",
-              height: this.state.p2.blocks[17].height + "px",
-              top: this.state.p2.blocks[17].top + "px",
-              left: this.state.p2.blocks[17].left + "px"
-            }}
-          />
-          {/* <div className="Enemy"
+            <div
+              className="Player2"
+              style={{
+                position: "absolute",
+                backgroundColor: "purple",
+                width: paddleWidth + "px",
+                height: paddleHeight + "px",
+                top: paddleY + "px",
+                left: this.state.p2.left - derp - paddleWidth / 2 + "px"
+              }}
+            />
+            <div
+              className="ball2"
+              style={{
+                position: "absolute",
+                backgroundColor: "white",
+                width: this.state.ball2.ballR2 + "px",
+                height: this.state.ball2.ballR2 + "px",
+                borderRadius: "50%",
+                top: this.state.ball2.top2 + "px",
+                left: this.state.ball2.left2 + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[0].color,
+                width: this.state.p2.blocks[0].width + "px",
+                height: this.state.p2.blocks[0].height + "px",
+                top: this.state.p2.blocks[0].top + "px",
+                left: this.state.p2.blocks[0].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[1].color,
+                width: this.state.p2.blocks[1].width + "px",
+                height: this.state.p2.blocks[1].height + "px",
+                top: this.state.p2.blocks[1].top + "px",
+                left: this.state.p2.blocks[1].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[2].color,
+                width: this.state.p2.blocks[2].width + "px",
+                height: this.state.p2.blocks[2].height + "px",
+                top: this.state.p2.blocks[2].top + "px",
+                left: this.state.p2.blocks[2].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[3].color,
+                width: this.state.p2.blocks[3].width + "px",
+                height: this.state.p2.blocks[3].height + "px",
+                top: this.state.p2.blocks[3].top + "px",
+                left: this.state.p2.blocks[3].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[4].color,
+                width: this.state.p2.blocks[4].width + "px",
+                height: this.state.p2.blocks[4].height + "px",
+                top: this.state.p2.blocks[4].top + "px",
+                left: this.state.p2.blocks[4].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[5].color,
+                width: this.state.p2.blocks[5].width + "px",
+                height: this.state.p2.blocks[5].height + "px",
+                top: this.state.p2.blocks[5].top + "px",
+                left: this.state.p2.blocks[5].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[6].color,
+                width: this.state.p2.blocks[6].width + "px",
+                height: this.state.p2.blocks[6].height + "px",
+                top: this.state.p2.blocks[6].top + "px",
+                left: this.state.p2.blocks[6].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[7].color,
+                width: this.state.p2.blocks[7].width + "px",
+                height: this.state.p2.blocks[7].height + "px",
+                top: this.state.p2.blocks[7].top + "px",
+                left: this.state.p2.blocks[7].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[8].color,
+                width: this.state.p2.blocks[8].width + "px",
+                height: this.state.p2.blocks[8].height + "px",
+                top: this.state.p2.blocks[8].top + "px",
+                left: this.state.p2.blocks[8].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[8].color,
+                width: this.state.p2.blocks[8].width + "px",
+                height: this.state.p2.blocks[8].height + "px",
+                top: this.state.p2.blocks[8].top + "px",
+                left: this.state.p2.blocks[8].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[9].color,
+                width: this.state.p2.blocks[9].width + "px",
+                height: this.state.p2.blocks[9].height + "px",
+                top: this.state.p2.blocks[9].top + "px",
+                left: this.state.p2.blocks[9].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[10].color,
+                width: this.state.p2.blocks[10].width + "px",
+                height: this.state.p2.blocks[10].height + "px",
+                top: this.state.p2.blocks[10].top + "px",
+                left: this.state.p2.blocks[10].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[11].color,
+                width: this.state.p2.blocks[11].width + "px",
+                height: this.state.p2.blocks[11].height + "px",
+                top: this.state.p2.blocks[11].top + "px",
+                left: this.state.p2.blocks[11].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[12].color,
+                width: this.state.p2.blocks[12].width + "px",
+                height: this.state.p2.blocks[12].height + "px",
+                top: this.state.p2.blocks[12].top + "px",
+                left: this.state.p2.blocks[12].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[13].color,
+                width: this.state.p2.blocks[13].width + "px",
+                height: this.state.p2.blocks[13].height + "px",
+                top: this.state.p2.blocks[13].top + "px",
+                left: this.state.p2.blocks[13].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[14].color,
+                width: this.state.p2.blocks[14].width + "px",
+                height: this.state.p2.blocks[14].height + "px",
+                top: this.state.p2.blocks[14].top + "px",
+                left: this.state.p2.blocks[14].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[15].color,
+                width: this.state.p2.blocks[15].width + "px",
+                height: this.state.p2.blocks[15].height + "px",
+                top: this.state.p2.blocks[15].top + "px",
+                left: this.state.p2.blocks[15].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[16].color,
+                width: this.state.p2.blocks[16].width + "px",
+                height: this.state.p2.blocks[16].height + "px",
+                top: this.state.p2.blocks[16].top + "px",
+                left: this.state.p2.blocks[16].left + "px"
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                backgroundColor: this.state.p2.blocks[17].color,
+                width: this.state.p2.blocks[17].width + "px",
+                height: this.state.p2.blocks[17].height + "px",
+                top: this.state.p2.blocks[17].top + "px",
+                left: this.state.p2.blocks[17].left + "px"
+              }}
+            />
+            {/* <div className="Enemy"
           style={{
             position: "relative",
             backgroundColor: "white",
@@ -1260,34 +1283,35 @@ export default class burst_Forth extends GameComponent {
             height: paddleHeight + "px"
           }}
         /> */}
-        </div>
-        <div
-          style={{
-            height: "40px",
-            width: "100%",
-            textAlign: "center",
-            position: "absolute",
-            color: "black"
-          }}
-        >
-          <p
+          </div>
+          <div
             style={{
-              width: "50%",
-              float: "left"
+              height: "40px",
+              width: "100%",
+              textAlign: "center",
+              position: "absolute",
+              color: "black"
             }}
           >
-            {this.users[0]} has {this.state.you.score} points
-          </p>
-          <p
-            style={{
-              width: "50%",
-              float: "right"
-            }}
-          >
-            {this.users[1]} has {this.state.p2.score} points
-          </p>
+            <p
+              style={{
+                width: "50%",
+                float: "left"
+              }}
+            >
+              {this.users[0]} has {this.state.you.score} points
+            </p>
+            <p
+              style={{
+                width: "50%",
+                float: "right"
+              }}
+            >
+              {this.users[1]} has {this.state.p2.score} points
+            </p>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 }
