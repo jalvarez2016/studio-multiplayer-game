@@ -276,6 +276,7 @@ export default class burst_Forth extends GameComponent {
     console.log(this.isCreator);
     if (this.isCreator) {
       numGone = 0;
+      goneBlocks = [];
       for (var q = 0; q < blocks.length; q++) {
         //console.log(blocks[q].durabilityNum);
         if (blocks[q].durabilityNum === 0) {
@@ -321,6 +322,29 @@ export default class burst_Forth extends GameComponent {
         }
       }
     }
+          this.getSessionDatabaseRef().update({
+            P1: {
+              name: this.users[0],
+              x_cord: this.state.you.left,
+              score: numGone, //change to the state score later
+              blocks: this.state.you.blocks,
+              win: false
+            }
+          });
+        } else if (numGone === blocks.length) {
+          console.log("win");
+          this.getSessionDatabaseRef().update({
+            P1: {
+              name: this.users[0],
+              x_cord: this.state.you.left,
+              score: numGone, //change to the state score later
+              blocks: this.state.you.blocks,
+              win: true
+            }
+          });
+        }
+      }
+    }
   }
 
   ballMove() {
@@ -330,11 +354,14 @@ export default class burst_Forth extends GameComponent {
       var { left, top, ballR, ballSpeedX, ballSpeedY } = this.state.ball;
 
       //wall collisions
-      if (left + ballR / 2 > W || ballR + left < 0) {
+      if (left + ballR > W || ballR + left < 0) {
         ballSpeedX = -ballSpeedX;
       }
-      if (top + ballR / 2 > H || top < 0) {
+      if (top + ballR > H || top < 0) {
         ballSpeedY = -ballSpeedY;
+        if (top + ballR >= H) {
+          ballSpeedY = ballSpeedY / 1.2;
+        }
       }
 
       //middle collision
@@ -348,6 +375,7 @@ export default class burst_Forth extends GameComponent {
         this.state.you.left - derp + paddleWidth / 2 > left
       ) {
         if (top + ballR >= paddleY && top <= paddleY + paddleHeight) {
+          // return ball speed to normal ballSpeedY =
           ballSpeedY = -ballSpeedY;
           // var delta = left - (this.state.you.left - derp + paddleHeight / 2);
           // ballSpeedX = delta * 0.15;
@@ -622,6 +650,8 @@ export default class burst_Forth extends GameComponent {
       currentBlock.top = 0;
     }
 
+    this.checkWin();
+
     if (this.isCreator) {
       this.getSessionDatabaseRef().update({
         P1: {
@@ -681,6 +711,7 @@ export default class burst_Forth extends GameComponent {
         }
       });
     }
+    // fix this god damn funstion, i don't know why it doesn't work
   }
 
   onMouseMove(e) {
