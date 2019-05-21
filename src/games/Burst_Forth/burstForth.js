@@ -500,7 +500,6 @@ export default class burst_Forth extends GameComponent {
             top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
@@ -508,46 +507,6 @@ export default class burst_Forth extends GameComponent {
             top2 >= blocks2[x].top
           ) {
             ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          }
-        } else if (
-          left2 >= blocks2[x].left + blocks2[x].width &&
-          left2 <= blocks2[x].left + blocks2[x].width + 2
-        ) {
-          if (
-            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
-            top2 + ballR2 >= blocks2[x].top
-          ) {
-            ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          } else if (
-            top2 <= blocks2[x].top + blocks2[x].height &&
-            top2 >= blocks2[x].top
-          ) {
-            ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          }
-        } else if (left2 >= blocks2[x].left && left2 <= blocks2[x].left + 2) {
-          if (
-            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
-            top2 + ballR2 >= blocks2[x].top
-          ) {
-            ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
-            currentBlock2.durabilityNum -= 1;
-            this.checkBlock(currentBlock2);
-          } else if (
-            top2 <= blocks2[x].top + blocks2[x].height &&
-            top2 >= blocks2[x].top
-          ) {
-            ballSpeedX2 = -ballSpeedX2;
-            ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           }
@@ -556,7 +515,7 @@ export default class burst_Forth extends GameComponent {
           left2 + ballR2 >= blocks2[x].left
         ) {
           if (
-            top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
+            top2 + ballR2 <= blocks2[x].top + 2 &&
             top2 + ballR2 >= blocks2[x].top
           ) {
             ballSpeedY2 = -ballSpeedY2;
@@ -564,28 +523,28 @@ export default class burst_Forth extends GameComponent {
             this.checkBlock(currentBlock2);
           } else if (
             top2 <= blocks2[x].top + blocks2[x].height &&
-            top2 >= blocks2[x].top
+            top2 >= blocks2[x].top + blocks2[x].height - 2
           ) {
             ballSpeedY2 = -ballSpeedY2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           }
         } else if (
-          left2 <= blocks2[x].left + blocks2[x].width &&
-          left2 >= blocks2[x]
+          left2 <= blocks2[x].left + blocks2[x].height &&
+          left2 >= blocks2[x].left + blocks[x].width - 2
         ) {
           if (
             top2 + ballR2 <= blocks2[x].top + blocks2[x].height &&
             top2 + ballR2 >= blocks2[x].top
           ) {
-            ballSpeedY2 = -ballSpeedY2;
+            ballSpeedX2 = -ballSpeedX2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock2);
           } else if (
             top2 <= blocks2[x].top + blocks2[x].height &&
             top2 >= blocks2[x].top
           ) {
-            ballSpeedY2 = -ballSpeedY2;
+            ballSpeedX2 = -ballSpeedX2;
             currentBlock2.durabilityNum -= 1;
             this.checkBlock(currentBlock);
           }
@@ -788,9 +747,24 @@ export default class burst_Forth extends GameComponent {
 
     if (this.state.win) {
       return (
-        <div>
-          <div>{this.state.win} is the winner</div>{" "}
-          <img src="http://clipart-library.com/images/8cAEdyAXi.png" />
+        <div
+          style={{
+            height: "800px",
+            background:
+              "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
+          }}
+        >
+          <div
+            style={{
+              zIndex: "2",
+              display: "flex",
+              justifyContent: "center",
+              flex: "start",
+              marginTop: "20px"
+            }}
+          >
+            {this.state.win} is the winner !
+          </div>
         </div>
       );
     } else {
@@ -807,9 +781,7 @@ export default class burst_Forth extends GameComponent {
               margin: "30px auto",
               position: "relative",
               background:
-                "url('data:image/jpeg;base64,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')",
-              backgroundSize: "auto",
-              backgroundRepeat: "no-repeat",
+                "linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%), linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)",
               width: W + "px",
               height: H + "px"
               // cursor: "none"
