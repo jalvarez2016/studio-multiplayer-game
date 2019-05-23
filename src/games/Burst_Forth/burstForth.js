@@ -753,7 +753,7 @@ export default class burst_Forth extends GameComponent {
               style={{
                 height: "800px",
                 background:
-                  "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
+                  "url('http://clipart-library.com/images/8cAEdyAXi.png')  "
               }}
             >
               <div
@@ -826,7 +826,7 @@ export default class burst_Forth extends GameComponent {
               style={{
                 height: "800px",
                 background:
-                  "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
+                  "url('http://clipart-library.com/images/8cAEdyAXi.png')  "
               }}
             >
               <div
