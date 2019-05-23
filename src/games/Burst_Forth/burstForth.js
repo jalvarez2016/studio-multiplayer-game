@@ -746,27 +746,54 @@ export default class burst_Forth extends GameComponent {
     // var creator = this.getSessionCreatorUserId();
 
     if (this.state.win) {
-      return (
-        <div
-          style={{
-            height: "800px",
-            background:
-              "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
-          }}
-        >
+      if (this.state.win === "p1") {
+        return (
           <div
             style={{
-              zIndex: "2",
-              display: "flex",
-              justifyContent: "center",
-              flex: "start",
-              marginTop: "20px"
+              height: "800px",
+              background:
+                "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
             }}
           >
-            {this.state.win} is the winner !
+            <div
+              style={{
+                zIndex: "2",
+                display: "flex",
+                postion: "relative",
+                justifyContent: "center",
+                flex: "start",
+                padding: "20px",
+                fontSize: "30px"
+              }}
+            >
+              {this.users[0]} is the winner !
+            </div>
           </div>
-        </div>
-      );
+        );
+      } else {
+        return (
+          <div
+            style={{
+              height: "800px",
+              background:
+                "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
+            }}
+          >
+            <div
+              style={{
+                zIndex: "2",
+                display: "flex",
+                postion: "relative",
+                justifyContent: "center",
+                flex: "start",
+                Padding: "20px"
+              }}
+            >
+              {this.users[1]} is the winner !
+            </div>
+          </div>
+        );
+      }
     } else {
       return (
         <div>
