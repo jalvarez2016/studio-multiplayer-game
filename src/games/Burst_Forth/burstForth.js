@@ -747,52 +747,103 @@ export default class burst_Forth extends GameComponent {
 
     if (this.state.win) {
       if (this.state.win === "p1") {
-        return (
-          <div
-            style={{
-              height: "800px",
-              background:
-                "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
-            }}
-          >
+        if (this.users[0] === UserApi.getName(this.user)) {
+          return (
             <div
               style={{
-                zIndex: "2",
-                display: "flex",
-                postion: "relative",
-                justifyContent: "center",
-                flex: "start",
-                padding: "20px",
-                fontSize: "30px"
+                height: "800px",
+                background:
+                  "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
               }}
             >
-              {this.users[0]} is the winner !
+              <div
+                style={{
+                  zIndex: "2",
+                  display: "flex",
+                  postion: "relative",
+                  justifyContent: "center",
+                  flex: "start",
+                  paddingTop: "20px",
+                  fontSize: "30px"
+                }}
+              >
+                <h1>{this.users[0]} is the winner !</h1>
+              </div>
             </div>
-          </div>
-        );
+          );
+        } else {
+          return (
+            <div
+              style={{
+                height: "800px",
+                background:
+                  "url('http://cdn.shopify.com/s/files/1/0641/1521/products/pins-sad-balloon.jpg?v=1516215357') center "
+              }}
+            >
+              <div
+                style={{
+                  zIndex: "2",
+                  display: "flex",
+                  postion: "relative",
+                  justifyContent: "center",
+                  flex: "start",
+                  paddingTop: "20px",
+                  fontSize: "30px"
+                }}
+              >
+                <h1>{this.users[1]} has lost !</h1>
+              </div>
+            </div>
+          );
+        }
       } else {
-        return (
-          <div
-            style={{
-              height: "800px",
-              background:
-                "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
-            }}
-          >
+        if (this.users[0] === UserApi.getName(this.user)) {
+          return (
             <div
               style={{
-                zIndex: "2",
-                display: "flex",
-                postion: "relative",
-                justifyContent: "center",
-                flex: "start",
-                Padding: "20px"
+                height: "800px",
+                background:
+                  "url('http://cdn.shopify.com/s/files/1/0641/1521/products/pins-sad-balloon.jpg?v=1516215357') center "
               }}
             >
-              {this.users[1]} is the winner !
+              <div
+                style={{
+                  zIndex: "2",
+                  display: "flex",
+                  postion: "relative",
+                  justifyContent: "center",
+                  flex: "start",
+                  paddingTop: "20px"
+                }}
+              >
+                <h1>{this.users[0]} has lost !</h1>
+              </div>
             </div>
-          </div>
-        );
+          );
+        } else {
+          return (
+            <div
+              style={{
+                height: "800px",
+                background:
+                  "url('http://clipart-library.com/images/8cAEdyAXi.png') center "
+              }}
+            >
+              <div
+                style={{
+                  zIndex: "2",
+                  display: "flex",
+                  postion: "relative",
+                  justifyContent: "center",
+                  flex: "start",
+                  paddingTop: "20px"
+                }}
+              >
+                <h1>{this.users[1]} is the winner !</h1>
+              </div>
+            </div>
+          );
+        }
       }
     } else {
       return (
