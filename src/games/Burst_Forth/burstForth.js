@@ -2,6 +2,7 @@ import GameComponent from "../../GameComponent.js";
 import React from "react";
 import UserApi from "../../UserApi.js";
 import firebase from "firebase";
+import "./style.css";
 //
 //
 const W = document.body.clientWidth - 200;
@@ -757,14 +758,19 @@ export default class burst_Forth extends GameComponent {
               }}
             >
               <div
+                className="result"
                 style={{
                   zIndex: "2",
                   display: "flex",
                   postion: "relative",
                   justifyContent: "center",
-                  flex: "start",
+                  flex: "center",
                   paddingTop: "20px",
-                  fontSize: "30px"
+                  fontSize: "30px",
+                  boxShadow: "3px 3px 5px 6px #ccc",
+                  width: "50%",
+                  margin: "auto",
+                  marginTop: "20px"
                 }}
               >
                 <h1>{this.users[0]} is the winner !</h1>
@@ -781,14 +787,19 @@ export default class burst_Forth extends GameComponent {
               }}
             >
               <div
+                className="result"
                 style={{
                   zIndex: "2",
                   display: "flex",
                   postion: "relative",
                   justifyContent: "center",
-                  flex: "start",
+                  flex: "center",
                   paddingTop: "20px",
-                  fontSize: "30px"
+                  fontSize: "30px",
+                  boxShadow: "3px 3px 5px 6px #ccc",
+                  width: "50%",
+                  margin: "auto",
+                  marginTop: "20px"
                 }}
               >
                 <h1>{this.users[1]} has lost !</h1>
@@ -807,13 +818,18 @@ export default class burst_Forth extends GameComponent {
               }}
             >
               <div
+                className="result"
                 style={{
                   zIndex: "2",
                   display: "flex",
                   postion: "relative",
                   justifyContent: "center",
-                  flex: "start",
-                  paddingTop: "20px"
+                  flex: "center",
+                  paddingTop: "20px",
+                  boxShadow: "3px 3px 5px 6px #ccc",
+                  width: "50%",
+                  margin: "auto",
+                  marginTop: "20px"
                 }}
               >
                 <h1>{this.users[0]} has lost !</h1>
@@ -830,13 +846,18 @@ export default class burst_Forth extends GameComponent {
               }}
             >
               <div
+                className="result"
                 style={{
                   zIndex: "2",
                   display: "flex",
                   postion: "relative",
                   justifyContent: "center",
-                  flex: "start",
-                  paddingTop: "20px"
+                  flex: "center",
+                  paddingTop: "20px",
+                  boxShadow: "3px 3px 5px 6px #ccc",
+                  width: "50%",
+                  margin: "auto",
+                  marginTop: "20px"
                 }}
               >
                 <h1>{this.users[1]} is the winner !</h1>
@@ -848,12 +869,12 @@ export default class burst_Forth extends GameComponent {
     } else {
       return (
         <div>
-          <audio controls loop autoPlay>
+          {/* <audio controls loop autoPlay>
             <source
               src="/Cave Story OST - Opening Theme.mp3"
               type="audio/mpeg"
             />
-          </audio>
+          </audio> */}
           <div
             style={{
               margin: "30px auto",
