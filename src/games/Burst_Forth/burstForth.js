@@ -10,7 +10,7 @@ const H = 700;
 const fps = 100;
 const paddleWidth = 100,
   paddleHeight = 10,
-  paddleY = H - 100;
+  paddleY = H - 20;
 
 var windowWidth = document.body.clientWidth;
 var derp = (windowWidth - W) / 2;
