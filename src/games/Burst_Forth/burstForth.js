@@ -868,7 +868,14 @@ export default class burst_Forth extends GameComponent {
       }
     } else {
       return (
-        <div>
+        <div
+          style={{
+            padding: "30px",
+            height: "80%",
+            border: "5px solid",
+            boxShadow: "12px 12px 2px 1px rgba(0, 0, 255, .2)"
+          }}
+        >
           {/* <audio controls loop autoPlay>
             <source
               src="/Cave Story OST - Opening Theme.mp3"
@@ -877,12 +884,43 @@ export default class burst_Forth extends GameComponent {
           </audio> */}
           <div
             style={{
-              margin: "30px auto",
+              height: "40px",
+              width: "100%",
+              margin: "auto",
+              textAlign: "center",
+              position: "relative",
+              color: "black",
+              border: "5px solid",
+              padding: "1px"
+            }}
+          >
+            <p
+              style={{
+                width: "50%",
+                float: "left"
+              }}
+            >
+              {this.users[0]} has {this.state.you.score} points
+            </p>
+            <p
+              style={{
+                width: "50%",
+                float: "right"
+              }}
+            >
+              {this.users[1]} has {this.state.p2.score} points
+            </p>
+          </div>
+          <div
+            style={{
+              margin: "auto ",
+              marginTop: " 20px",
               position: "relative",
               background:
                 "linear-gradient(217deg, rgba(255,0,0,.8), rgba(255,0,0,0) 70.71%),linear-gradient(127deg, rgba(0,255,0,.8), rgba(0,255,0,0) 70.71%), linear-gradient(336deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70.71%)",
               width: W + "px",
-              height: H + "px"
+              height: H + "px",
+              border: "5px solid"
               // cursor: "none"
             }}
             onMouseMove={e => this.onMouseMove(e)}
@@ -1323,32 +1361,6 @@ export default class burst_Forth extends GameComponent {
             height: paddleHeight + "px"
           }}
         /> */}
-          </div>
-          <div
-            style={{
-              height: "40px",
-              width: "100%",
-              textAlign: "center",
-              position: "absolute",
-              color: "black"
-            }}
-          >
-            <p
-              style={{
-                width: "50%",
-                float: "left"
-              }}
-            >
-              {this.users[0]} has {this.state.you.score} points
-            </p>
-            <p
-              style={{
-                width: "50%",
-                float: "right"
-              }}
-            >
-              {this.users[1]} has {this.state.p2.score} points
-            </p>
           </div>
         </div>
       );
