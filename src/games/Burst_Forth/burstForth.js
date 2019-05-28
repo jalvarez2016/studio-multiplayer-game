@@ -569,8 +569,8 @@ export default class burst_Forth extends GameComponent {
     if (currentBlock.durabilityNum <= 0) {
       currentBlock.height = 0;
       currentBlock.width = 0;
-      currentBlock.left = 0;
-      currentBlock.top = 0;
+      currentBlock.left = -10;
+      currentBlock.top = -10;
     }
 
     if (this.isCreator) {
@@ -754,7 +754,8 @@ export default class burst_Forth extends GameComponent {
               style={{
                 height: "800px",
                 background:
-                  "url('http://clipart-library.com/images/8cAEdyAXi.png')  "
+                  "url('http://clipart-library.com/images/8cAEdyAXi.png')  ",
+                textAlign: "center"
               }}
             >
               <div
@@ -767,10 +768,12 @@ export default class burst_Forth extends GameComponent {
                   flex: "center",
                   paddingTop: "20px",
                   fontSize: "30px",
-                  boxShadow: "3px 3px 5px 6px #ccc",
+                  boxShadow: "5px 5px 12px 12px rgba(0, 0, 255, .2)",
                   width: "50%",
                   margin: "auto",
-                  marginTop: "20px"
+                  marginTop: "20px",
+                  borderRadius: "50%",
+                  backgroundColor: "white"
                 }}
               >
                 <h1>{this.users[0]} is the winner !</h1>
@@ -796,10 +799,12 @@ export default class burst_Forth extends GameComponent {
                   flex: "center",
                   paddingTop: "20px",
                   fontSize: "30px",
-                  boxShadow: "3px 3px 5px 6px #ccc",
+                  boxShadow: "5px 5px 12px 12px rgba(0, 0, 255, .2)",
                   width: "50%",
                   margin: "auto",
-                  marginTop: "20px"
+                  marginTop: "20px",
+                  borderRadius: "50%",
+                  backgroundColor: "white"
                 }}
               >
                 <h1>{this.users[1]} has lost !</h1>
@@ -826,10 +831,13 @@ export default class burst_Forth extends GameComponent {
                   justifyContent: "center",
                   flex: "center",
                   paddingTop: "20px",
-                  boxShadow: "3px 3px 5px 6px #ccc",
+                  boxShadow: "5px 5px 12px 12px rgba(0, 0, 255, .2)",
                   width: "50%",
                   margin: "auto",
-                  marginTop: "20px"
+                  marginTop: "20px",
+                  textAlign: "center",
+                  borderRadius: "50%",
+                  backgroundColor: "white"
                 }}
               >
                 <h1>{this.users[0]} has lost !</h1>
@@ -854,10 +862,13 @@ export default class burst_Forth extends GameComponent {
                   justifyContent: "center",
                   flex: "center",
                   paddingTop: "20px",
-                  boxShadow: "3px 3px 5px 6px #ccc",
+                  boxShadow: "5px 5px 12px 12px rgba(0, 0, 255, .2)",
                   width: "50%",
                   margin: "auto",
-                  marginTop: "20px"
+                  marginTop: "20px",
+                  textAlign: "center",
+                  borderRadius: "50%",
+                  backgroundColor: "white"
                 }}
               >
                 <h1>{this.users[1]} is the winner !</h1>
@@ -871,9 +882,13 @@ export default class burst_Forth extends GameComponent {
         <div
           style={{
             padding: "30px",
+            width: "90%",
+            margin: "auto",
+            marginTop: "2%",
             height: "80%",
-            border: "5px solid",
-            boxShadow: "12px 12px 2px 1px rgba(0, 0, 255, .2)"
+            // border: "5px solid",
+            boxShadow: "5px 5px 12px 12px rgba(0, 0, 255, .2)",
+            textAlign: "center"
           }}
         >
           {/* <audio controls loop autoPlay>
@@ -890,8 +905,9 @@ export default class burst_Forth extends GameComponent {
               textAlign: "center",
               position: "relative",
               color: "black",
-              border: "5px solid",
-              padding: "1px"
+              // border: "5px solid",
+              padding: "1px",
+              boxShadow: "5px 5px 12px 12px rgba(0, 0, 255, .2)"
             }}
           >
             <p
