@@ -773,7 +773,9 @@ export default class burst_Forth extends GameComponent {
                   margin: "auto",
                   marginTop: "20px",
                   borderRadius: "50%",
-                  backgroundColor: "white"
+                  backgroundColor: "white",
+                  animationName: "gameOver",
+                  animationDuration: "3s",
                 }}
               >
                 <h1>{this.users[0]} is the winner !</h1>
